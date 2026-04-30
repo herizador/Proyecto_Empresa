@@ -8,8 +8,6 @@ package modelo;
  *
  */
 public class Trabajador {
-	
-	private int identificador;
 	private String dni;
 	private String nombre;
 	private String apellidos;
@@ -17,7 +15,6 @@ public class Trabajador {
 	private String telefono;
 	private String puesto;
 	/**
-	 * @param identificador
 	 * @param dni
 	 * @param nombre
 	 * @param apellidos
@@ -25,9 +22,8 @@ public class Trabajador {
 	 * @param telefono
 	 * @param puesto
 	 */
-	public Trabajador(int identificador, String dni, String nombre,
+	public Trabajador(String dni, String nombre,
 			String apellidos, String direccion, String telefono, String puesto) {
-		this.identificador = identificador;
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
@@ -35,18 +31,7 @@ public class Trabajador {
 		this.telefono = telefono;
 		this.puesto = puesto;
 	}
-	/**
-	 * @return the identificador
-	 */
-	public int getIdentificador() {
-		return identificador;
-	}
-	/**
-	 * @param identificador the identificador to set
-	 */
-	public void setIdentificador(int identificador) {
-		this.identificador = identificador;
-	}
+
 	/**
 	 * @return the dni
 	 */

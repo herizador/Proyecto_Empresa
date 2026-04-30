@@ -28,7 +28,7 @@ public class Empresa {
 	 */
 	public boolean esta(Trabajador t){
 		for(int i=0; i<trabajadores.size(); i++){
-			if(trabajadores.get(i).getIdentificador() == t.getIdentificador()){
+			if(trabajadores.get(i).getDni().equals(t.getDni())){
 				return true;
 			}
 		}
@@ -38,12 +38,12 @@ public class Empresa {
 	/**
 	 * Devuelve la posici�n en la que se encuentra un trabajador
 	 * busc�ndolo por dni
-	 * @param t
+	 * @param dni
 	 * @return
 	 */
-	public int devolverPosicion(int codigo){
+	public int devolverPosicion(String dni){
 		for(int i=0; i<trabajadores.size(); i++){
-			if (trabajadores.get(i).getIdentificador() == codigo){
+			if (trabajadores.get(i).getDni().equals(dni)){
 				return i;
 			}
 		}
@@ -63,10 +63,10 @@ public class Empresa {
 	}
 	/**
 	 * Da de baja un trabajador busc�ndolo por c�digo
-	 * @param t
+	 * @param dni
 	 */
-	public boolean bajaTrabajador(int codigo){
-		int posicion = devolverPosicion(codigo);
+	public boolean bajaTrabajador(String dni){
+		int posicion = devolverPosicion(dni);
 		if(posicion > -1){
 			trabajadores.remove(posicion);
 			return true;
@@ -78,10 +78,10 @@ public class Empresa {
 	 * @param dni
 	 * @return
 	 */
-	public Trabajador buscarTrabajador(int codigo){		
+	public Trabajador buscarTrabajador(String dni){
 		for(int i=0; i<trabajadores.size(); i++){
-			if(trabajadores.get(i).getIdentificador() == codigo){
-				return( trabajadores.get(i)); 
+			if(trabajadores.get(i).getDni().equals(dni)){
+				return( trabajadores.get(i));
 			}
 		}
 		return null;
@@ -91,8 +91,8 @@ public class Empresa {
 	 * @param dni
 	 * @return
 	 */
-	public void modificarTrabajador(int codigo, String dni, String nombre, String apellidos, String direccion, String telefono, String puesto){
-		int posicion = devolverPosicion(codigo);
+	public void modificarTrabajador(String dni, String nombre, String apellidos, String direccion, String telefono, String puesto){
+		int posicion = devolverPosicion(dni);
 		trabajadores.get(posicion).setDni(dni);
 		trabajadores.get(posicion).setNombre(nombre);
 		trabajadores.get(posicion).setApellidos(apellidos);
@@ -109,14 +109,13 @@ public class Empresa {
 		String [][] datos = new String[trabajadores.size()][7];
 		for (int i=0; i<trabajadores.size(); i++){
 			String[] fila = new String [7];
-			
-			fila[0] = Integer.toString(trabajadores.get(i).getIdentificador());
-			fila[1] = trabajadores.get(i).getDni();
-			fila[2] = trabajadores.get(i).getNombre();
-			fila[3] = trabajadores.get(i).getApellidos();
-			fila[4] = trabajadores.get(i).getDireccion();
-			fila[5] = trabajadores.get(i).getTelefono();
-			fila[6] = trabajadores.get(i).getPuesto();
+
+			fila[0] = trabajadores.get(i).getDni();
+			fila[1] = trabajadores.get(i).getNombre();
+			fila[2] = trabajadores.get(i).getApellidos();
+			fila[3] = trabajadores.get(i).getDireccion();
+			fila[4] = trabajadores.get(i).getTelefono();
+			fila[5] = trabajadores.get(i).getPuesto();
 			
 			datos[i] = fila;
 		}

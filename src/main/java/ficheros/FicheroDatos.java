@@ -28,7 +28,6 @@ public class FicheroDatos {
 		try {
 			fichero = new DataOutputStream (new FileOutputStream(ruta)); 
 			for(int i=0; i<trabajadores.size(); i++){
-				fichero.writeInt(trabajadores.get(i).getIdentificador());
 				fichero.writeUTF(trabajadores.get(i).getDni());
 				fichero.writeUTF(trabajadores.get(i).getNombre());
 				fichero.writeUTF(trabajadores.get(i).getApellidos());
@@ -74,7 +73,7 @@ public class FicheroDatos {
 				String direccion =ficheroDatos.readUTF();
 				String telefono =ficheroDatos.readUTF();
 				String puesto =ficheroDatos.readUTF();
-				t = new Trabajador(id,dni,nombre,apellidos,direccion,telefono,puesto);
+				t = new Trabajador(dni,nombre,apellidos,direccion,telefono,puesto);
 				trabajadoresLeidos.add(t);				
 			}			
 		}

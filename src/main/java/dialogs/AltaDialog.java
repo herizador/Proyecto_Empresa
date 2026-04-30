@@ -31,8 +31,6 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	/**
 	 * Elementos del JFrame
 	 */
-	JLabel etiquetaIdentificador;
-	JTextField areaIdentificador;
 	JLabel etiquetaDni;
 	JTextField areaDni;
 	JLabel etiquetaNombre;
@@ -47,10 +45,10 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	JComboBox comboPuesto;
 	JButton aceptar;
 	JButton cancelar;
+
 	/**
 	 * Variables a las que se pasar� el contenido de los JTextField y del combo box
 	 */
-	int id = 0;
 	String dni = "";
 	String nombre = "";
 	String apellidos = "";
@@ -58,7 +56,6 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	String telefono = "";
 	String puesto = "";
 
-	JPanel pIdentificador;
 	JPanel pDni;
 	JPanel pNombre;
 	JPanel pApellidos;
@@ -80,7 +77,6 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 		setLocationRelativeTo(null);
 
 		// una fila por JPanel
-		pIdentificador = new JPanel();
 		pDni = new JPanel();
 		pNombre = new JPanel();
 		pApellidos = new JPanel();
@@ -88,13 +84,6 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 		pTelefono = new JPanel();
 		pPuesto = new JPanel();
 		pBotones = new JPanel();
-
-		// Se crean los elementos y se añaden
-		etiquetaIdentificador = new JLabel("Identificador");
-		areaIdentificador = new JTextField(15);
-		// Se añaden al JPanel
-		pIdentificador.add(etiquetaIdentificador);
-		pIdentificador.add(areaIdentificador);
 
 		// Se crean los elementos y se añaden
 		etiquetaDni = new JLabel("DNI                 ");
@@ -145,7 +134,6 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 		pPuesto.add(comboPuesto);
 
 		// Añadir al JDialog los JPanel
-		add(pIdentificador);
 		add(pDni);
 		add(pNombre);
 		add(pApellidos);
@@ -179,15 +167,13 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 		// TODO Auto-generated method stub
 		if (e.getSource() == aceptar) {
 			try {
-
-				id = Integer.parseInt(areaIdentificador.getText());
 				dni = areaDni.getText();
 				nombre = areaNombre.getText();
 				apellidos = areaApellidos.getText();
 				direccion = areaDireccion.getText();
 				telefono = areaTelefono.getText();
 				if (comprobarErrores()) {
-					Trabajador t = new Trabajador(id, dni, nombre, apellidos, direccion, telefono, puesto);
+					Trabajador t = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
 					if (empresa.altaTrabajador(t)) {
 						JOptionPane.showMessageDialog(null, "Datos introducidos correctamente");
 					} else {
@@ -214,11 +200,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	 * @return
 	 */
 	public boolean comprobarErrores() {
-		if (id < 1) {
-			JOptionPane.showMessageDialog(null, "El ID debe ser un n�mero entero positivo", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		} else if (dni.equals("") || dni.length() != 9) {
+		if (dni.equals("") || dni.length() != 9) {
 			JOptionPane.showMessageDialog(null, "El DNI debe tener longitud 9", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} else if (nombre.equals("")) {

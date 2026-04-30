@@ -26,8 +26,8 @@ public class BajaDialog extends JDialog implements ActionListener {
 
 	JButton aceptar;
 	JButton cancelar;
-	JLabel identificador;
-	JTextField areaIdentificador;
+	JLabel etiquetaDni;
+	JTextField areaDni;
 	JPanel panel;
 	JPanel panelBotones;
 	JLabel texto;
@@ -44,7 +44,7 @@ public class BajaDialog extends JDialog implements ActionListener {
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(null);
 
-		texto = new JLabel("<html>Introduzca el ID del trabajador<br> que desea dar de baja<br><br></html>");
+		texto = new JLabel("<html>Introduzca el DNI del trabajador<br> que desea dar de baja<br><br></html>");
 		add(texto);
 
 		panel = new JPanel();
@@ -52,10 +52,10 @@ public class BajaDialog extends JDialog implements ActionListener {
 		add(panel);
 		add(panelBotones);
 
-		identificador = new JLabel("Identificador");
-		panel.add(identificador);
-		areaIdentificador = new JTextField(15);
-		panel.add(areaIdentificador);
+		etiquetaDni = new JLabel("DNI");
+		panel.add(etiquetaDni);
+		areaDni = new JTextField(15);
+		panel.add(areaDni);
 
 		aceptar = new JButton("Aceptar");
 		aceptar.addActionListener(this);
@@ -74,13 +74,13 @@ public class BajaDialog extends JDialog implements ActionListener {
 		// TODO Auto-generated method stub
 
 		if (e.getSource() == aceptar) {
-			int respuesta = JOptionPane.showConfirmDialog(null, "�Desea dar de baja el trabajador?", "Borrar",
+			int respuesta = JOptionPane.showConfirmDialog(null, "Desea dar de baja el trabajador?", "Borrar",
 					JOptionPane.YES_NO_OPTION);
 			switch (respuesta) {
 			case JOptionPane.YES_OPTION:
 				try {
 					// Operaciones en caso afirmativo
-					if (empresa.bajaTrabajador(Integer.parseInt(areaIdentificador.getText()))) {
+					if (empresa.bajaTrabajador(areaDni.getText())) {
 						JOptionPane.showMessageDialog(this, "El trabajador se ha eliminado correctamente");
 					} else {
 						JOptionPane.showMessageDialog(null, "El trabajador no se encuentra en la lista", "Error",
