@@ -33,14 +33,9 @@ public class AccesoTrabajador {
             ps.setString(4, direccion);
             ps.setString(5, telefono);
             ps.setString(6, puesto);
-            int insertado = ps.executeUpdate();
-
-            if(insertado == 0) {
-                actualizarTrabajador(trabajador);
-                throw new TrabajadorException(TrabajadorException.TRABAJADOR_EXISTENTE);
-            }
         } catch (SQLException e) {
-            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+            actualizarTrabajador(trabajador);
+            throw new TrabajadorException(TrabajadorException.TRABAJADOR_EXISTENTE);
         } catch (BDException e) {
             throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
         } finally {
@@ -64,7 +59,7 @@ public class AccesoTrabajador {
         try {
             conexion = ConfigMySql.abrirConexion();
 
-            String queryActualizar = "UPDATE FROM trabajador SET nombre = ?, apellidos = ?, direccion = ?, telefono = ?, puesto = ?  WHERE dni = ?";
+            String queryActualizar = "UPDATE trabajador SET nombre = ?, apellidos = ?, direccion = ?, telefono = ?, puesto = ?  WHERE dni = ?";
             ps = conexion.prepareStatement(queryActualizar);
             ps.setString(1, nombre);
             ps.setString(2, apellidos);

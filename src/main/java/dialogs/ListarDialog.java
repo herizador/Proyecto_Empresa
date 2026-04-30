@@ -40,7 +40,7 @@ public class ListarDialog extends JDialog implements ActionListener {
 		setLocationRelativeTo(null);
 
 		// Crea un JTable, cada fila será un trabajador
-		String[] columnas = { "Identificador", "DNI", "Nombre", "Apellidos", "Direcci�n", "Tel�fono", "Puesto" };
+		String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 		String[][] datos = empresa.listarTrabajadores();
 		tabla = new JTable(datos, columnas);
 		// Mete la tabla en un JCrollPane
