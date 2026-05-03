@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dao.AccesoTrabajador;
+import gui.Validaciones;
 import modelo.Empresa;
 import modelo.Trabajador;
 
@@ -124,13 +126,16 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 		// Se crean los elementos y se añaden
 		etiquetaPuesto = new JLabel("Puesto                         ");
 		pPuesto.add(etiquetaPuesto);
+
 		// lista desplegable
 		comboPuesto = new JComboBox();
 		comboPuesto.addItem("Elija Puesto");
-		comboPuesto.addItem("Programador");
-		comboPuesto.addItem("Analista");
-		comboPuesto.addItem("Arquitecto");
-		comboPuesto.addItem("Jefe de Proyecto");
+
+		List<String> puestos = AccesoTrabajador.obtenerPuestos();
+		for(String puesto: puestos){
+			comboPuesto.addItem(puesto);
+		}
+
 		comboPuesto.addItemListener(this);
 		pPuesto.add(comboPuesto);
 
@@ -194,7 +199,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	 * @return
 	 */
 	public boolean comprobarErrores() {
-		if (dni.equals("") || dni.length() != 9) {
+		if (dni.equals("") || !Validaciones.validarDni(dni)) {
 			JOptionPane.showMessageDialog(null, "El DNI debe tener longitud 9", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} else if (nombre.equals("")) {
@@ -209,7 +214,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 			JOptionPane.showMessageDialog(null, "Debe introducir la direcci�n del trabajador", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
-		} else if (telefono.equals("") || telefono.length() != 9) {
+		} else if (telefono.equals("") || !Validaciones.validarTelefono(telefono)) {
 			JOptionPane.showMessageDialog(null, "El tel�fono debe tener longitud 9", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;

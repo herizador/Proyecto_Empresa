@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -162,5 +161,33 @@ public class AccesoTrabajador {
         }
 
         return trabajadores;
+    }
+
+    public static List<String> obtenerPuestos() {
+        List<String> puestos = new LinkedList<>();
+        Connection conexion = null;
+        PreparedStatement ps;
+        try {
+            conexion = ConfigMySql.abrirConexion();
+
+            String queryConsulta = "SELECT DISTINCT (puesto) FROM trabajador";
+            ps = conexion.prepareStatement(queryConsulta);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String puesto = rs.getString("puesto");
+                puestos.add(puesto);
+            }
+        }catch (SQLException e) {
+            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+        } catch (BDException e) {
+            throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                ConfigMySql.cerrarConexion(conexion);
+            }
+        }
+
+        return puestos;
     }
 }

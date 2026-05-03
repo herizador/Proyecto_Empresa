@@ -63,7 +63,6 @@ public class BajaDialog extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         int fila = tabla.getSelectedRow();
-        System.out.println("fila: " + fila);
 
         if (e.getSource() == aceptar) {
             if (fila == -1) {
@@ -77,7 +76,6 @@ public class BajaDialog extends JDialog implements ActionListener {
                     case JOptionPane.YES_OPTION:
                         // Operaciones en caso afirmativo
                         AccesoTrabajador.borrarTrabajador(dniTrabajorABorrar);
-                        System.out.println("dniTrabajorABorrar: " + dniTrabajorABorrar);
                         JOptionPane.showMessageDialog(this, "El trabajador se ha eliminado correctamente");
                         refrescarDatos();
                         break;
