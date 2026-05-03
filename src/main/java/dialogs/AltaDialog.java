@@ -146,7 +146,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 		aceptar.addActionListener(this);
 		pBotones.add(aceptar);
 
-		cancelar = new JButton("Cancelar");
+		cancelar = new JButton("Cerrar");
 		cancelar.addActionListener(this);
 		pBotones.add(cancelar);
 

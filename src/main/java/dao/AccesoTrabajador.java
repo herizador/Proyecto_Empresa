@@ -87,15 +87,16 @@ public class AccesoTrabajador {
         }
     }
 
-    public static void borrarTrabajador() {
+    public static void borrarTrabajador(String dni) {
         Connection conexion = null;
         PreparedStatement ps;
 
         try {
             conexion = ConfigMySql.abrirConexion();
-            String queryConsulta = "SELECT * FROM trabajador WHERE dni = null";
-            ps = conexion.prepareStatement(queryConsulta);
-
+            String queryDelete = "DELETE FROM trabajador WHERE dni = ?";
+            ps = conexion.prepareStatement(queryDelete);
+            ps.setString(1, dni);
+            ps.executeUpdate();
         }catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
