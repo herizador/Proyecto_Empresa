@@ -18,17 +18,20 @@ import modelo.Empresa;
  */
 public class BajaDialog extends JDialog implements ActionListener {
 
+    /**
+     * Imagen de check
+     */
+    ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/check_verde.png"));
+    Image imagenRedimensionada = iconoOriginal.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+    ImageIcon iconoCheck = new ImageIcon(imagenRedimensionada);
+
     JButton aceptar;
     JButton cancelar;
     JTable tabla;
     DefaultTableModel modelo;
     String[][] datos;
 
-
-    Empresa empresa;
-
-    public BajaDialog(Empresa empresa) {
-        this.empresa = empresa;
+    public BajaDialog() {
 
         setResizable(false);
         // t�tulo del di�log
@@ -76,7 +79,7 @@ public class BajaDialog extends JDialog implements ActionListener {
                     case JOptionPane.YES_OPTION:
                         // Operaciones en caso afirmativo
                         AccesoTrabajador.borrarTrabajador(dniTrabajorABorrar);
-                        JOptionPane.showMessageDialog(this, "El trabajador se ha eliminado correctamente");
+                        JOptionPane.showMessageDialog(null, "Trabajador eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
                         refrescarDatos();
                         break;
                     case JOptionPane.NO_OPTION:

@@ -3,23 +3,20 @@
  */
 package dialogs;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import dao.AccesoTrabajador;
+import exception.BDException;
+import exception.FicheroException;
+import exception.TrabajadorException;
+import ficheros.FicheroDatos;
 import gui.Validaciones;
 import modelo.Empresa;
 import modelo.Trabajador;
@@ -30,6 +27,13 @@ import modelo.Trabajador;
  *
  */
 public class AltaDialog extends JDialog implements ActionListener, ItemListener {
+
+	/**
+	 * Imagen de check
+	 */
+	ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/check_verde.png"));
+	Image imagenRedimensionada = iconoOriginal.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+	ImageIcon iconoCheck = new ImageIcon(imagenRedimensionada);
 
 	/**
 	 * Elementos del JFrame
@@ -50,6 +54,13 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	JButton cancelar;
 
 	/**
+	 * Variables para insertar por fichero o manualmente
+	 */
+	JButton altaManual;
+	JButton insertarPorFichero;
+	JPanel pElegirForma;
+
+	/**
 	 * Variables a las que se pasar� el contenido de los JTextField y del combo box
 	 */
 	String dni = "";
@@ -67,10 +78,33 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	JPanel pPuesto;
 	JPanel pBotones;
 
-	Empresa empresa;
+	public AltaDialog() {
+		String[] opciones = {"Manual", "Por fichero CSV"};
+		int opcion = JOptionPane.showOptionDialog(null, "¿Cómo desea insertar el trabajador?", "Alta de Trabajador", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
 
-	public AltaDialog(Empresa empresa) {
-		this.empresa = empresa;
+		switch (opcion) {
+			case JOptionPane.YES_OPTION:
+				altaManual();
+				break;
+			case JOptionPane.NO_OPTION:
+				insertaPorFichero();
+				break;
+		}
+	}
+
+	public void insertaPorFichero() {
+        try {
+            List<Trabajador> trajadores = FicheroDatos.obtenerTrabajadores("ficheroDatos/empresa.csv");
+			AccesoTrabajador.insertarTrabajadorLista(trajadores);
+
+			JOptionPane.showMessageDialog(null, "Trabajadores insertados exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+        } catch (FicheroException | TrabajadorException | BDException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+					JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+	public void altaManual() {
 		setResizable(false);
 		// t�tulo del di�log
 		setTitle("Alta Trabajador");
@@ -164,7 +198,6 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
 		puesto = comboPuesto.getSelectedItem().toString();
 	}
 
@@ -180,16 +213,17 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 				if (comprobarErrores()) {
 					Trabajador t = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
 					AccesoTrabajador.altaTrabajador(t);
-					JOptionPane.showMessageDialog(null, "Datos introducidos correctamente");
+					JOptionPane.showMessageDialog(null, "Trabajador insertado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
 				}
-			} catch (Exception e1) {
+			} catch (TrabajadorException ex) {
+				JOptionPane.showMessageDialog(null, ex.getMessage(), "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+			} catch (BDException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "ERROR",
 						JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (e.getSource() == cancelar) {
 			dispose();
 		}
-
 	}
 
 	/**
@@ -199,7 +233,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	 * @return
 	 */
 	public boolean comprobarErrores() {
-		if (dni.equals("") || !Validaciones.validarDni(dni)) {
+		if (dni.equals("") || Validaciones.validarDni(dni)) {
 			JOptionPane.showMessageDialog(null, "El DNI no tiene formato valido (8 numeros y 1 letra)", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} else if (nombre.equals("")) {

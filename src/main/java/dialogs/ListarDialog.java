@@ -23,14 +23,10 @@ import modelo.Empresa;
  *
  */
 public class ListarDialog extends JDialog implements ActionListener {
-
-	Empresa empresa;
 	JTable tabla;
 	JButton cerrar;
 
-	public ListarDialog(Empresa empresa) {
-		this.empresa = empresa;
-
+	public ListarDialog() {
 		setResizable(false);
 		// t�tulo del di�log
 		setTitle("Listado Trabajadores en la Base de datos");

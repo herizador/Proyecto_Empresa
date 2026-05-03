@@ -1,14 +1,12 @@
 package ficheros;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
+import dao.AccesoTrabajador;
+import exception.FicheroException;
+import exception.TrabajadorException;
 import modelo.Trabajador;
 
 /**
@@ -58,44 +56,69 @@ public class FicheroDatos {
 	 * @param rutaFichero
 	 * @return
 	 */
-	public static ArrayList<Trabajador> obtenerTrabajadores(String rutaFichero) {
+	public static List<Trabajador> obtenerTrabajadores(String rutaFichero) throws FicheroException {
+		BufferedReader br = null;
+		ArrayList<Trabajador> trabajadoresLeidos = new ArrayList <>();
+		Trabajador t;
 
-		DataInputStream ficheroDatos=null;
-		ArrayList<Trabajador> trabajadoresLeidos = new ArrayList <Trabajador>();
-		Trabajador t = null;
 		try {
-			ficheroDatos=new DataInputStream(new FileInputStream(rutaFichero));
-			while (true){
-				int id = ficheroDatos.readInt();
-				String dni =ficheroDatos.readUTF();
-				String nombre =ficheroDatos.readUTF();
-				String apellidos =ficheroDatos.readUTF();
-				String direccion =ficheroDatos.readUTF();
-				String telefono =ficheroDatos.readUTF();
-				String puesto =ficheroDatos.readUTF();
+			File ficheroLectura = new File(rutaFichero);
+			FileReader fr = new FileReader(ficheroLectura);
+			br = new BufferedReader(fr);
+
+			String linea = br.readLine();
+			while (linea != null) {
+				linea = linea.trim();
+				String[] datos = linea.split(";");
+
+				if(datos.length != 6){
+					throw new FicheroException(FicheroException.DATOS_INCOMPLETOS);
+				}
+
+				String dni = datos[0];
+				String nombre = datos[1];
+				String apellidos = datos[2];
+				String direccion = datos[3];
+				String telefono = datos[4];
+				String puesto = datos[5];
+
 				t = new Trabajador(dni,nombre,apellidos,direccion,telefono,puesto);
-				trabajadoresLeidos.add(t);				
+				trabajadoresLeidos.add(t);
+
+				linea = br.readLine();
 			}			
-		}
-		catch (EOFException e){
-			
-		} 
-		catch (FileNotFoundException e){
-			e.printStackTrace();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally{
+		} catch (FileNotFoundException e){
+			throw new FicheroException(FicheroException.ERROR_RUTA_INEXISTENTE);
+		} catch (IOException e) {
+			throw new FicheroException(FicheroException.ERROR_AL_LEER);
+		} finally{
 			try {
-				ficheroDatos.close();
+				if(br != null){
+					br.close();
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+				throw new FicheroException(FicheroException.ERROR_CERRAR_BUFFER);
+			}
 		}
-		
+
 		return trabajadoresLeidos;
 	}
 
+	public static void main(String[] args) {
+		List<Trabajador> trabaj = null;
+
+		try {
+			trabaj = FicheroDatos.obtenerTrabajadores("ficheroDatos\\empresa.csv");
+		} catch (FicheroException e) {
+			System.out.println(e.getMessage());
+		}
+
+        try {
+            if(trabaj != null){
+				AccesoTrabajador.insertarTrabajadorLista(trabaj);
+			}
+        } catch (TrabajadorException e) {
+			System.out.println(e.getMessage());
+        }
+    }
 }

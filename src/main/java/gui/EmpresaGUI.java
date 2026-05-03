@@ -15,6 +15,7 @@ import dialogs.BajaDialog;
 import dialogs.ListarDialog;
 //import dialogs.ModificaDialog;
 //import dialogs.VerDialog;
+import exception.FicheroException;
 import ficheros.FicheroDatos;
 import modelo.Empresa;
 import modelo.Trabajador;
@@ -25,9 +26,6 @@ import modelo.Trabajador;
  *
  */
 public class EmpresaGUI extends JFrame implements ActionListener {
-
-	Empresa empresa;
-	
 	JButton altaTrabajador;
 	JButton bajaTrabajador;
 	JButton modificaTrabajador;
@@ -37,10 +35,6 @@ public class EmpresaGUI extends JFrame implements ActionListener {
 
 	public EmpresaGUI() {
 		super("Gestión de personal");
-
-		// Carga los trabajadores leidos de un fichero a memoria
-		ArrayList<Trabajador> trabaj = FicheroDatos.obtenerTrabajadores("ficheroDatos\\empresa.dat");
-		empresa = new Empresa(trabaj);
 
 		// Tamaño JFrame
 		setSize(800, 750);
@@ -90,19 +84,18 @@ public class EmpresaGUI extends JFrame implements ActionListener {
 		// e implementa el método actionPerformed() pasando como parámetro un
 		// ActionEvent.
 		if (e.getSource() == altaTrabajador) {
-			new AltaDialog(empresa);
+			new AltaDialog();
 		} else if (e.getSource() == bajaTrabajador) {
-			new BajaDialog(empresa);
+			new BajaDialog();
 		} else if (e.getSource() == modificaTrabajador) {
 			//new ModificaDialog(empresa);
 		} else if (e.getSource() == buscaTrabajador) {
 			//new VerDialog(empresa);
 		} else if (e.getSource() == listarTrabajadores) {
-			new ListarDialog(empresa);
+			new ListarDialog();
 		}
 		// Cuando se sale se vuelca a fichero.
 		else if (e.getSource() == salir) {
-			FicheroDatos.escribirTrabajadores("ficheroDatos\\empresa.dat", empresa.getTrabajadores());
 			System.exit(0);
 		}
 	}
@@ -111,8 +104,6 @@ public class EmpresaGUI extends JFrame implements ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		new EmpresaGUI();
 	}
-
 }

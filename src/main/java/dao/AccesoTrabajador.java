@@ -48,6 +48,47 @@ public class AccesoTrabajador {
         }
     }
 
+    public static void insertarTrabajadorLista(List<Trabajador> lista) throws TrabajadorException, BDException {
+        Connection conexion = null;
+        PreparedStatement ps;
+
+        try {
+            conexion = ConfigMySql.abrirConexion();
+
+            conexion.setAutoCommit(false);
+
+            String queryInsert = "INSERT INTO trabajador(dni, nombre, apellidos, direccion, telefono, puesto) VALUES(?,?,?,?,?,?)";
+            ps = conexion.prepareStatement(queryInsert);
+
+            for (Trabajador trabajador : lista) {
+                ps.setString(1, trabajador.getDni());
+                ps.setString(2, trabajador.getNombre());
+                ps.setString(3, trabajador.getApellidos());
+                ps.setString(4, trabajador.getDireccion());
+                ps.setString(5, trabajador.getTelefono());
+                ps.setString(6, trabajador.getPuesto());
+                ps.addBatch();
+            }
+
+            ps.executeBatch();
+
+            conexion.commit();
+        } catch (SQLException e) {
+            try {
+                conexion.rollback();
+            } catch (SQLException ex) {
+                throw new BDException(BDException.ERROR_ROOLBACK);
+            }
+            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+        } catch (BDException e) {
+            throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                ConfigMySql.cerrarConexion(conexion);
+            }
+        }
+    }
+
     public static void actualizarTrabajador(Trabajador trabajador) throws BDException, TrabajadorException {
         Connection conexion = null;
         PreparedStatement ps;
@@ -75,7 +116,7 @@ public class AccesoTrabajador {
             if (actualizado == 0) {
                 throw new TrabajadorException(TrabajadorException.TRABAJADOR_INEXISTENTE);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
             throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
@@ -86,7 +127,7 @@ public class AccesoTrabajador {
         }
     }
 
-    public static void borrarTrabajador(String dni) {
+    public static void borrarTrabajador(String dni) throws BDException {
         Connection conexion = null;
         PreparedStatement ps;
 
@@ -96,7 +137,7 @@ public class AccesoTrabajador {
             ps = conexion.prepareStatement(queryDelete);
             ps.setString(1, dni);
             ps.executeUpdate();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
             throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
@@ -107,11 +148,11 @@ public class AccesoTrabajador {
         }
     }
 
-    public static String[][] listarTrabajadores() {
+    public static String[][] listarTrabajadores() throws BDException {
         List<Trabajador> trabajadores = obtenerTrabajadores();
         String[][] listado = new String[trabajadores.size()][6];
 
-        for (int i=0; i<trabajadores.size(); i++){
+        for (int i = 0; i < trabajadores.size(); i++) {
             String[] fila = new String[6];
             Trabajador trabajador = trabajadores.get(i);
 
@@ -128,7 +169,7 @@ public class AccesoTrabajador {
         return listado;
     }
 
-    public static List<Trabajador> obtenerTrabajadores() {
+    public static List<Trabajador> obtenerTrabajadores() throws BDException {
         Connection conexion = null;
         PreparedStatement ps;
         List<Trabajador> trabajadores = new LinkedList<>();
@@ -150,7 +191,7 @@ public class AccesoTrabajador {
                 Trabajador trabajador = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
                 trabajadores.add(trabajador);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
             throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
@@ -163,7 +204,7 @@ public class AccesoTrabajador {
         return trabajadores;
     }
 
-    public static List<String> obtenerPuestos() {
+    public static List<String> obtenerPuestos() throws BDException {
         List<String> puestos = new LinkedList<>();
         Connection conexion = null;
         PreparedStatement ps;
@@ -178,7 +219,7 @@ public class AccesoTrabajador {
                 String puesto = rs.getString("puesto");
                 puestos.add(puesto);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
             throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
