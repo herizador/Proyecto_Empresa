@@ -9,9 +9,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AccesoTrabajador {
-    public static void insertarTrabajador(Trabajador trabajador) throws BDException, TrabajadorException {
+    public static void altaTrabajador(Trabajador trabajador) throws BDException, TrabajadorException {
         Connection conexion = null;
         PreparedStatement ps;
 
@@ -68,6 +71,26 @@ public class AccesoTrabajador {
             ps.setString(5, puesto);
             ps.setString(6, dni);
             int actualizado = ps.executeUpdate();
+        }catch (SQLException e) {
+            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+        } catch (BDException e) {
+            throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                ConfigMySql.cerrarConexion(conexion);
+            }
+        }
+    }
+
+    public static void borrarTrabajador() {
+        Connection conexion = null;
+        PreparedStatement ps;
+
+        try {
+            conexion = ConfigMySql.abrirConexion();
+            String queryConsulta = "SELECT * FROM trabajador";
+            ps = conexion.prepareStatement(queryConsulta);
+
         }catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {

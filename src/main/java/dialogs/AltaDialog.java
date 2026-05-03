@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import dao.AccesoTrabajador;
 import modelo.Empresa;
 import modelo.Trabajador;
 
@@ -174,19 +175,12 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 				telefono = areaTelefono.getText();
 				if (comprobarErrores()) {
 					Trabajador t = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
-					if (empresa.altaTrabajador(t)) {
-						JOptionPane.showMessageDialog(null, "Datos introducidos correctamente");
-					} else {
-						JOptionPane.showMessageDialog(null, "El ID del trabajador que quiere introducir ya existe",
-								"Error", JOptionPane.ERROR_MESSAGE);
-					}
+					AccesoTrabajador.altaTrabajador(t);
 				}
-
 			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(null, "El ID debe ser un n�mero entero", "Error",
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "ERROR",
 						JOptionPane.ERROR_MESSAGE);
 			}
-
 		} else if (e.getSource() == cancelar) {
 			dispose();
 		}
