@@ -14,6 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import dao.AccesoTrabajador;
 import modelo.Empresa;
 
 /**
@@ -32,7 +33,7 @@ public class ListarDialog extends JDialog implements ActionListener {
 
 		setResizable(false);
 		// t�tulo del di�log
-		setTitle("Listado Trabajadores");
+		setTitle("Listado Trabajadores en la Base de datos");
 		// tama�o
 		setSize(750, 700);
 		setLayout(new FlowLayout());
@@ -41,7 +42,7 @@ public class ListarDialog extends JDialog implements ActionListener {
 
 		// Crea un JTable, cada fila será un trabajador
 		String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
-		String[][] datos = empresa.listarTrabajadores();
+		String[][] datos = AccesoTrabajador.listarTrabajadores();
 		tabla = new JTable(datos, columnas);
 		// Mete la tabla en un JCrollPane
 		JScrollPane jsp = new JScrollPane(tabla);

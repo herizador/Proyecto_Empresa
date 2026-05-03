@@ -106,9 +106,9 @@ public class Empresa {
 	 * @return
 	 */
 	public String[][] listarTrabajadores(){
-		String [][] datos = new String[trabajadores.size()][7];
+		String [][] datos = new String[trabajadores.size()][6];
 		for (int i=0; i<trabajadores.size(); i++){
-			String[] fila = new String [7];
+			String[] fila = new String [6];
 
 			fila[0] = trabajadores.get(i).getDni();
 			fila[1] = trabajadores.get(i).getNombre();

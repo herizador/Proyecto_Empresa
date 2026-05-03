@@ -36,6 +36,7 @@ public class AccesoTrabajador {
             ps.setString(4, direccion);
             ps.setString(5, telefono);
             ps.setString(6, puesto);
+            ps.executeUpdate();
         } catch (SQLException e) {
             actualizarTrabajador(trabajador);
             throw new TrabajadorException(TrabajadorException.TRABAJADOR_EXISTENTE);
@@ -71,6 +72,10 @@ public class AccesoTrabajador {
             ps.setString(5, puesto);
             ps.setString(6, dni);
             int actualizado = ps.executeUpdate();
+
+            if (actualizado == 0) {
+                throw new TrabajadorException(TrabajadorException.TRABAJADOR_INEXISTENTE);
+            }
         }catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
@@ -88,7 +93,7 @@ public class AccesoTrabajador {
 
         try {
             conexion = ConfigMySql.abrirConexion();
-            String queryConsulta = "SELECT * FROM trabajador";
+            String queryConsulta = "SELECT * FROM trabajador WHERE dni = null";
             ps = conexion.prepareStatement(queryConsulta);
 
         }catch (SQLException e) {
@@ -100,5 +105,61 @@ public class AccesoTrabajador {
                 ConfigMySql.cerrarConexion(conexion);
             }
         }
+    }
+
+    public static String[][] listarTrabajadores() {
+        List<Trabajador> trabajadores = obtenerTrabajadores();
+        String[][] listado = new String[trabajadores.size()][6];
+
+        for (int i=0; i<trabajadores.size(); i++){
+            String[] fila = new String[6];
+            Trabajador trabajador = trabajadores.get(i);
+
+            fila[0] = trabajador.getDni();
+            fila[1] = trabajador.getNombre();
+            fila[2] = trabajador.getApellidos();
+            fila[3] = trabajador.getDireccion();
+            fila[4] = trabajador.getTelefono();
+            fila[5] = trabajador.getPuesto();
+
+            listado[i] = fila;
+        }
+
+        return listado;
+    }
+
+    public static List<Trabajador> obtenerTrabajadores() {
+        Connection conexion = null;
+        PreparedStatement ps;
+        List<Trabajador> trabajadores = new LinkedList<>();
+        try {
+            conexion = ConfigMySql.abrirConexion();
+
+            String queryConsulta = "SELECT * FROM trabajador";
+            ps = conexion.prepareStatement(queryConsulta);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String dni = rs.getString("dni");
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String direccion = rs.getString("direccion");
+                String telefono = rs.getString("telefono");
+                String puesto = rs.getString("puesto");
+
+                Trabajador trabajador = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
+                trabajadores.add(trabajador);
+            }
+        }catch (SQLException e) {
+            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+        } catch (BDException e) {
+            throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                ConfigMySql.cerrarConexion(conexion);
+            }
+        }
+
+        return trabajadores;
     }
 }

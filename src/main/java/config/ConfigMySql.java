@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class ConfigMySql {
 
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static final String URLBD = "jdbc:mysql://avnadmin:AVNS_yWNjNGldA1ft2WMCsSA@proyecto-empresa-proyecto-empresa-ismael.l.aivencloud.com:20904/defaultdb?ssl-mode=REQUIRED";
+	private static final String URLBD = "jdbc:mysql://avnadmin:AVNS_yWNjNGldA1ft2WMCsSA@proyecto-empresa-proyecto-empresa-ismael.l.aivencloud.com:20904/empresa_db?ssl-mode=REQUIRED";
 
 	private static final String usuario = "Ismael";
 	private static final String contrasena = "AVNS_B9zKbJT7PqXalrXKpOr";

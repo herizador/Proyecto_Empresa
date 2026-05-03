@@ -165,7 +165,6 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		if (e.getSource() == aceptar) {
 			try {
 				dni = areaDni.getText();
@@ -176,6 +175,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 				if (comprobarErrores()) {
 					Trabajador t = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
 					AccesoTrabajador.altaTrabajador(t);
+					JOptionPane.showMessageDialog(null, "Datos introducidos correctamente");
 				}
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "ERROR",
