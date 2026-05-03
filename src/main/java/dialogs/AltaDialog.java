@@ -200,7 +200,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 	 */
 	public boolean comprobarErrores() {
 		if (dni.equals("") || !Validaciones.validarDni(dni)) {
-			JOptionPane.showMessageDialog(null, "El DNI debe tener longitud 9", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "El DNI no tiene formato valido (8 numeros y 1 letra)", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} else if (nombre.equals("")) {
 			JOptionPane.showMessageDialog(null, "Debe introducir el nombre del trabajador", "Error",
@@ -215,7 +215,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		} else if (telefono.equals("") || !Validaciones.validarTelefono(telefono)) {
-			JOptionPane.showMessageDialog(null, "El tel�fono debe tener longitud 9", "Error",
+			JOptionPane.showMessageDialog(null, "El telefono debe tener longitud 9 y debe comenzar con 6,7 o 9", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		} else if (puesto.equals("")) {
