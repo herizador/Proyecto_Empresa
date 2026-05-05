@@ -32,7 +32,6 @@ public class BajaDialog extends JDialog implements ActionListener {
     String[][] datos;
 
     public BajaDialog() {
-
         setResizable(false);
         // t�tulo del di�log
         setTitle("Baja Trabajador");
