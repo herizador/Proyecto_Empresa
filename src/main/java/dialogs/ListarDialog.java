@@ -40,10 +40,13 @@ public class ListarDialog extends JDialog implements ActionListener {
 		String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 		String[][] datos = AccesoTrabajador.listarTrabajadores();
 		tabla = new JTable(datos, columnas);
+
 		// Mete la tabla en un JCrollPane
 		JScrollPane jsp = new JScrollPane(tabla);
 		jsp.setPreferredSize(new Dimension(700, 600));
 		add(jsp);
+
+		tabla.setAutoCreateRowSorter(true);
 
 		cerrar = new JButton("Cerrar");
 		cerrar.addActionListener(this);
