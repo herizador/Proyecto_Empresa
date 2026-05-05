@@ -73,8 +73,15 @@ public class ModificarDialog extends JDialog implements ActionListener {
         if (e.getSource() == btnCancelar) {
             dispose();
         }else if (e.getSource() == btnModificar) {
-            if(tabla.isEditing()){
-                int fila = tabla.getSelectedRow();
+            int fila = tabla.getSelectedRow();
+
+            if(fila != -1){
+                if (tabla.isEditing()) {
+                    tabla.getCellEditor().stopCellEditing();
+                }
+
+                int columna = tabla.getSelectedColumn();
+                System.out.println(datos[fila][columna]);
 
                 String dni = datos[fila][0];
                 String nombre = datos[fila][1];
@@ -86,14 +93,16 @@ public class ModificarDialog extends JDialog implements ActionListener {
                 Trabajador trabajadorAux = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
 
                 try {
+                    System.out.println(trabajadorAux);
                     AccesoTrabajador.actualizarTrabajador(trabajadorAux);
                     JOptionPane.showMessageDialog(null, "Trabajador modificado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                    System.out.println("Trabajador modificado exitosamente");
                     refrescarDatos();
                 } catch (TrabajadorException | BDException ex) {
                     JOptionPane.showMessageDialog(null, "No se ha podido modificar", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }else{
-                JOptionPane.showMessageDialog(null, "Modifica un campo trabajador", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Selecciona una fila", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

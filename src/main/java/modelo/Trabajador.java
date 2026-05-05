@@ -104,5 +104,16 @@ public class Trabajador {
 	public void setPuesto(String puesto) {
 		this.puesto = puesto;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Trabajador{" +
+				"dni='" + dni + '\'' +
+				", nombre='" + nombre + '\'' +
+				", apellidos='" + apellidos + '\'' +
+				", direccion='" + direccion + '\'' +
+				", telefono='" + telefono + '\'' +
+				", puesto='" + puesto + '\'' +
+				'}';
+	}
 }
