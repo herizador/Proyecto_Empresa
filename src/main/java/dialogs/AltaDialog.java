@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dialogs;
 
 import java.awt.*;
@@ -173,11 +170,11 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 		add(pTelefono);
 		add(pPuesto);
 
-		aceptar = new JButton("Aceptar");
+		aceptar = new JButton("Alta");
 		aceptar.addActionListener(this);
 		pBotones.add(aceptar);
 
-		cancelar = new JButton("Cerrar");
+		cancelar = new JButton("Salir");
 		cancelar.addActionListener(this);
 		pBotones.add(cancelar);
 

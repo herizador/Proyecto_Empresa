@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dialogs;
 
 import java.awt.Dimension;
@@ -12,7 +9,6 @@ import java.util.List;
 import javax.swing.*;
 
 import dao.AccesoTrabajador;
-import modelo.Empresa;
 import modelo.Trabajador;
 
 /**
@@ -50,7 +46,7 @@ public class ListarDialog extends JDialog implements ActionListener {
 
 		tabla.setAutoCreateRowSorter(true);
 
-		cerrar = new JButton("Cerrar");
+		cerrar = new JButton("Salir");
 		cerrar.addActionListener(this);
 		add(cerrar);
 

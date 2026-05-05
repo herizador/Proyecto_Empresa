@@ -10,8 +10,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class BuscarDialog extends JFrame implements ActionListener {
@@ -37,6 +35,8 @@ public class BuscarDialog extends JFrame implements ActionListener {
     JButton btnSalir;
 
     public BuscarDialog() {
+        JOptionPane.showMessageDialog(null, "Buscador de trabajadores:\n" + "- Seleccione un campo (DNI, Nombre...)\n" + "- Escriba lo que desea buscar (puede ser una parte del texto)\n" + "- Deje el campo vacío para ver a todos los trabajadores.", "¿Cómo buscar?", JOptionPane.INFORMATION_MESSAGE);
+
         setResizable(false);
         setTitle("Buscar Trabajadores");
         setSize(750, 725);
@@ -58,6 +58,8 @@ public class BuscarDialog extends JFrame implements ActionListener {
 
         DefaultTableModel modelo = new DefaultTableModel(datos, columnas);
         tabla = new JTable(modelo);
+
+        tabla.setAutoCreateRowSorter(true);
 
         JScrollPane jsp = new JScrollPane(tabla);
         jsp.setPreferredSize(new Dimension(700, 600));
@@ -89,7 +91,7 @@ public class BuscarDialog extends JFrame implements ActionListener {
             } catch (TrabajadorException | BDException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }else if (e.getSource() == btnSalir) {
+        } else if (e.getSource() == btnSalir) {
             dispose();
         }
     }

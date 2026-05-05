@@ -1,6 +1,3 @@
-/**
- *
- */
 package dialogs;
 
 import java.awt.*;
@@ -12,7 +9,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.AccesoTrabajador;
-import modelo.Empresa;
 import modelo.Trabajador;
 
 /**
@@ -52,6 +48,8 @@ public class BajaDialog extends JDialog implements ActionListener {
         modelo = new DefaultTableModel(datos, columnas);
         tabla = new JTable(modelo);
 
+        tabla.setAutoCreateRowSorter(true);
+
         // Mete la tabla en un JCrollPane
         JScrollPane jsp = new JScrollPane(tabla);
         jsp.setPreferredSize(new Dimension(700, 600));
@@ -61,7 +59,7 @@ public class BajaDialog extends JDialog implements ActionListener {
         aceptar.addActionListener(this);
         add(aceptar);
 
-        cancelar = new JButton("Cancelar");
+        cancelar = new JButton("Salir");
         cancelar.addActionListener(this);
         add(cancelar);
         // Visible
