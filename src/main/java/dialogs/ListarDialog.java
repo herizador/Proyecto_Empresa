@@ -8,11 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 
 import dao.AccesoTrabajador;
 import modelo.Empresa;
@@ -27,6 +23,8 @@ public class ListarDialog extends JDialog implements ActionListener {
 	JButton cerrar;
 
 	public ListarDialog() {
+		JOptionPane.showMessageDialog(null, "Presione la cabecera para ordenar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+
 		setResizable(false);
 		// t�tulo del di�log
 		setTitle("Listado Trabajadores en la Base de datos");

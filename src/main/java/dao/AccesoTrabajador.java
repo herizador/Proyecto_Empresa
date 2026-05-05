@@ -89,6 +89,51 @@ public class AccesoTrabajador {
         }
     }
 
+    public static void actualizarTrabajadorLista(List<Trabajador> trabajadores) throws BDException, TrabajadorException {
+        Connection conexion = null;
+        PreparedStatement ps;
+
+        try {
+            conexion = ConfigMySql.abrirConexion();
+
+            conexion.setAutoCommit(false);
+
+            String queryActualizar = "UPDATE trabajador SET nombre = ?, apellidos = ?, direccion = ?, telefono = ?, puesto = ?  WHERE dni = ?";
+            ps = conexion.prepareStatement(queryActualizar);
+
+            for(Trabajador trabajador : trabajadores) {
+                ps.setString(1, trabajador.getNombre());
+                ps.setString(2, trabajador.getApellidos());
+                ps.setString(3, trabajador.getDireccion());
+                ps.setString(4, trabajador.getTelefono());
+                ps.setString(5, trabajador.getPuesto());
+                ps.setString(6, trabajador.getDni());
+                ps.addBatch();
+            }
+
+            int[] modificado = ps.executeBatch();
+
+            if (modificado.length == 0) {
+                throw new TrabajadorException(TrabajadorException.TRABAJADOR_INEXISTENTE);
+            }
+
+            conexion.commit();
+        } catch (SQLException e) {
+            try {
+                conexion.rollback();
+            } catch (SQLException ex) {
+                throw new BDException(BDException.ERROR_ROOLBACK);
+            }
+            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+        } catch (BDException e) {
+            throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                ConfigMySql.cerrarConexion(conexion);
+            }
+        }
+    }
+
     public static void actualizarTrabajador(Trabajador trabajador) throws BDException, TrabajadorException {
         Connection conexion = null;
         PreparedStatement ps;

@@ -32,6 +32,8 @@ public class BajaDialog extends JDialog implements ActionListener {
     String[][] datos;
 
     public BajaDialog() {
+        JOptionPane.showMessageDialog(null, "Seleccione un empleado y presione 'Borrar' para dar de baja.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+
         setResizable(false);
         // t�tulo del di�log
         setTitle("Baja Trabajador");
@@ -50,7 +52,7 @@ public class BajaDialog extends JDialog implements ActionListener {
         jsp.setPreferredSize(new Dimension(700, 600));
         add(jsp);
 
-        aceptar = new JButton("Aceptar");
+        aceptar = new JButton("Borrar");
         aceptar.addActionListener(this);
         add(aceptar);
 
@@ -68,7 +70,7 @@ public class BajaDialog extends JDialog implements ActionListener {
 
         if (e.getSource() == aceptar) {
             if (fila == -1) {
-                JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna fila", "ERROR",
+                JOptionPane.showMessageDialog(null, "No ha seleccionado ningun empleado", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
             } else {
                 String dniTrabajorABorrar = datos[fila][0];
