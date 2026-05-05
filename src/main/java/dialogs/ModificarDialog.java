@@ -7,9 +7,11 @@ import modelo.Trabajador;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class ModificarDialog extends JDialog implements ActionListener {
 
@@ -26,6 +28,7 @@ public class ModificarDialog extends JDialog implements ActionListener {
     String[][] datos;
     JTable tabla;
     DefaultTableModel modelo;
+    JComboBox<String> comboPuesto;
 
     JButton btnCancelar;
     JButton btnModificar;
@@ -47,6 +50,16 @@ public class ModificarDialog extends JDialog implements ActionListener {
         JScrollPane jsp = new JScrollPane(tabla);
         jsp.setPreferredSize(new Dimension(700, 600));
         add(jsp);
+
+        List<String> puestos = AccesoTrabajador.obtenerPuestos();
+        comboPuesto = new JComboBox<>();
+
+        for (String p : puestos) {
+            comboPuesto.addItem(p);
+        }
+
+        TableColumn columnaPuesto = tabla.getColumnModel().getColumn(5);
+        columnaPuesto.setCellEditor(new DefaultCellEditor(comboPuesto));
 
         btnModificar = new JButton("Modificar");
         btnModificar.addActionListener(this);
@@ -80,23 +93,18 @@ public class ModificarDialog extends JDialog implements ActionListener {
                     tabla.getCellEditor().stopCellEditing();
                 }
 
-                int columna = tabla.getSelectedColumn();
-                System.out.println(datos[fila][columna]);
-
-                String dni = datos[fila][0];
-                String nombre = datos[fila][1];
-                String apellido = datos[fila][2];
-                String direccion = datos[fila][3];
-                String telefono = datos[fila][4];
-                String puesto = datos[fila][5];
+                String dni = tabla.getValueAt(fila, 0).toString();
+                String nombre = tabla.getValueAt(fila, 1).toString();
+                String apellido = tabla.getValueAt(fila, 2).toString();
+                String direccion = tabla.getValueAt(fila, 3).toString();
+                String telefono = tabla.getValueAt(fila, 4).toString();
+                String puesto = tabla.getValueAt(fila, 5).toString();
 
                 Trabajador trabajadorAux = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
 
                 try {
-                    System.out.println(trabajadorAux);
                     AccesoTrabajador.actualizarTrabajador(trabajadorAux);
                     JOptionPane.showMessageDialog(null, "Trabajador modificado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                    System.out.println("Trabajador modificado exitosamente");
                     refrescarDatos();
                 } catch (TrabajadorException | BDException ex) {
                     JOptionPane.showMessageDialog(null, "No se ha podido modificar", "Error", JOptionPane.ERROR_MESSAGE);
