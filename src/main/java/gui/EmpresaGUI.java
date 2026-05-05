@@ -10,12 +10,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import dialogs.AltaDialog;
-import dialogs.BajaDialog;
-import dialogs.ListarDialog;
+import dialogs.*;
 //import dialogs.ModificaDialog;
 //import dialogs.VerDialog;
-import dialogs.ModificarDialog;
 import exception.FicheroException;
 import ficheros.FicheroDatos;
 import modelo.Empresa;
@@ -91,7 +88,7 @@ public class EmpresaGUI extends JFrame implements ActionListener {
 		} else if (e.getSource() == modificaTrabajador) {
 			new ModificarDialog();
 		} else if (e.getSource() == buscaTrabajador) {
-			//new VerDialog(empresa);
+			new BuscarDialog();
 		} else if (e.getSource() == listarTrabajadores) {
 			new ListarDialog();
 		}

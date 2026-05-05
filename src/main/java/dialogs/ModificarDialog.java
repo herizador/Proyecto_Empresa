@@ -30,6 +30,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     /**
      * Tabla
      */
+    List<Trabajador> trajadores;
     String[][] datos;
     JTable tabla;
     DefaultTableModel modelo;
@@ -49,7 +50,8 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
         setLocationRelativeTo(null);
 
         String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
-        datos = AccesoTrabajador.listarTrabajadores();
+        trajadores = AccesoTrabajador.obtenerTrabajadores();
+        datos = AccesoTrabajador.listarTrabajadores(trajadores);
 
         modelo = new DefaultTableModel(datos, columnas) {
             @Override
@@ -90,7 +92,8 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     }
 
     public void refrescarDatos() {
-        datos = AccesoTrabajador.listarTrabajadores();
+        trajadores = AccesoTrabajador.obtenerTrabajadores();
+        datos = AccesoTrabajador.listarTrabajadores(trajadores);
         String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();

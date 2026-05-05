@@ -7,11 +7,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.*;
 
 import dao.AccesoTrabajador;
 import modelo.Empresa;
+import modelo.Trabajador;
 
 /**
  * 
@@ -21,6 +23,7 @@ import modelo.Empresa;
 public class ListarDialog extends JDialog implements ActionListener {
 	JTable tabla;
 	JButton cerrar;
+	String[][] datos;
 
 	public ListarDialog() {
 		JOptionPane.showMessageDialog(null, "Presione la cabecera para ordenar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -36,7 +39,8 @@ public class ListarDialog extends JDialog implements ActionListener {
 
 		// Crea un JTable, cada fila será un trabajador
 		String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
-		String[][] datos = AccesoTrabajador.listarTrabajadores();
+		List<Trabajador> trajadores = AccesoTrabajador.obtenerTrabajadores();
+		datos = AccesoTrabajador.listarTrabajadores(trajadores);
 		tabla = new JTable(datos, columnas);
 
 		// Mete la tabla en un JCrollPane

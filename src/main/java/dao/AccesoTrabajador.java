@@ -193,8 +193,7 @@ public class AccesoTrabajador {
         }
     }
 
-    public static String[][] listarTrabajadores() throws BDException {
-        List<Trabajador> trabajadores = obtenerTrabajadores();
+    public static String[][] listarTrabajadores(List<Trabajador> trabajadores) throws BDException {
         String[][] listado = new String[trabajadores.size()][6];
 
         for (int i = 0; i < trabajadores.size(); i++) {
@@ -275,5 +274,47 @@ public class AccesoTrabajador {
         }
 
         return puestos;
+    }
+
+    public static List<Trabajador> buscarPorFiltro(String columna, String filtro) throws BDException, TrabajadorException {
+        List<Trabajador> trabajadores = new LinkedList<>();
+        Connection conexion = null;
+        PreparedStatement ps;
+        try {
+            conexion = ConfigMySql.abrirConexion();
+
+            String queryConsulta = "SELECT * FROM trabajador WHERE " + columna + " LIKE ?";
+            ps = conexion.prepareStatement(queryConsulta);
+
+            ps.setString(1, "%" + filtro + "%");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String dni = rs.getString("dni");
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String direccion = rs.getString("direccion");
+                String telefono = rs.getString("telefono");
+                String puesto = rs.getString("puesto");
+
+                Trabajador trabajadorAux = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
+                trabajadores.add(trabajadorAux);
+            }
+
+            if(trabajadores.isEmpty()){
+                throw new TrabajadorException(TrabajadorException.TRABAJADORES_NO_ENCONTRADOS);
+            }
+        }catch (SQLException e) {
+            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+        } catch (BDException e) {
+            throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                ConfigMySql.cerrarConexion(conexion);
+            }
+        }
+
+        return trabajadores;
     }
 }

@@ -6,12 +6,14 @@ package dialogs;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.AccesoTrabajador;
 import modelo.Empresa;
+import modelo.Trabajador;
 
 /**
  * @author usuario
@@ -30,6 +32,7 @@ public class BajaDialog extends JDialog implements ActionListener {
     JTable tabla;
     DefaultTableModel modelo;
     String[][] datos;
+    List<Trabajador> trajadores;
 
     public BajaDialog() {
         JOptionPane.showMessageDialog(null, "Seleccione un empleado y presione 'Borrar' para dar de baja.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -43,7 +46,9 @@ public class BajaDialog extends JDialog implements ActionListener {
 
         // Crea un JTable, cada fila será un trabajador
         String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
-        datos = AccesoTrabajador.listarTrabajadores();
+        trajadores = AccesoTrabajador.obtenerTrabajadores();
+        datos = AccesoTrabajador.listarTrabajadores(trajadores);
+
         modelo = new DefaultTableModel(datos, columnas);
         tabla = new JTable(modelo);
 
@@ -94,7 +99,8 @@ public class BajaDialog extends JDialog implements ActionListener {
     }
 
     public void refrescarDatos(){
-        datos = AccesoTrabajador.listarTrabajadores();
+        trajadores = AccesoTrabajador.obtenerTrabajadores();
+        datos = AccesoTrabajador.listarTrabajadores(trajadores);
         String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
