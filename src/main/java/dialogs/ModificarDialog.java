@@ -23,7 +23,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     /**
      * Imagen de check
      */
-    ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/check_verde.png"));
+    ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/images/check_verde.png"));
     Image imagenRedimensionada = iconoOriginal.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
     ImageIcon iconoCheck = new ImageIcon(imagenRedimensionada);
 
