@@ -3,6 +3,7 @@ package dialogs;
 import dao.AccesoTrabajador;
 import exception.BDException;
 import exception.TrabajadorException;
+import gui.LeerValidaciones;
 import modelo.Trabajador;
 
 import javax.swing.*;
@@ -107,11 +108,11 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
         if (e.getSource() == btnCancelar) {
             dispose();
         } else if (e.getSource() == btnModificar) {
-            if (!trabajadoresAModificar.isEmpty()) {
-                if (tabla.isEditing()) {
-                    tabla.getCellEditor().stopCellEditing();
-                }
+            if (tabla.isEditing()) {
+                tabla.getCellEditor().stopCellEditing();
+            }
 
+            if (!trabajadoresAModificar.isEmpty()) {
                 try {
                     AccesoTrabajador.actualizarTrabajadorLista(trabajadoresAModificar);
                     JOptionPane.showMessageDialog(null, "Trabajador/es modificado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
@@ -132,21 +133,31 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
             int fila = e.getFirstRow();
             int columna = e.getColumn();
 
+
             if (fila < 0 || columna < 0 || fila >= tabla.getRowCount()) {
                 return;
             }
 
-            String dni = tabla.getValueAt(fila, 0).toString();
-            String nombre = tabla.getValueAt(fila, 1).toString();
-            String apellido = tabla.getValueAt(fila, 2).toString();
-            String direccion = tabla.getValueAt(fila, 3).toString();
-            String telefono = tabla.getValueAt(fila, 4).toString();
-            String puesto = tabla.getValueAt(fila, 5).toString();
+            String valorNuevo = tabla.getValueAt(fila, columna).toString();
+            String valorOriginal = datos[fila][columna];
 
-            Trabajador trabajadorAux = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
+            if(!valorNuevo.equals(valorOriginal)) {
+                String dni = tabla.getValueAt(fila, 0).toString();
+                String nombre = tabla.getValueAt(fila, 1).toString();
+                String apellido = tabla.getValueAt(fila, 2).toString();
+                String direccion = tabla.getValueAt(fila, 3).toString();
+                String telefono = tabla.getValueAt(fila, 4).toString();
+                String puesto = tabla.getValueAt(fila, 5).toString();
 
-            trabajadoresAModificar.removeIf(t -> t.getDni().equals(dni));
-            trabajadoresAModificar.add(trabajadorAux);
+                if(LeerValidaciones.comprobarErrores(dni, nombre, apellido, direccion, telefono, puesto)) {
+                    Trabajador trabajadorAux = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
+
+                    trabajadoresAModificar.removeIf(t -> t.getDni().equals(dni));
+                    trabajadoresAModificar.add(trabajadorAux);
+                }else{
+                    refrescarDatos();
+                }
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.AccesoTrabajador;
+import exception.BDException;
 import modelo.Trabajador;
 
 /**
@@ -45,7 +46,13 @@ public class BajaDialog extends JDialog implements ActionListener {
         trajadores = AccesoTrabajador.obtenerTrabajadores();
         datos = AccesoTrabajador.listarTrabajadores(trajadores);
 
-        modelo = new DefaultTableModel(datos, columnas);
+        modelo = new DefaultTableModel(datos, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Bloquea TODAS las celdas
+            }
+        };
+
         tabla = new JTable(modelo);
 
         tabla.setAutoCreateRowSorter(true);
@@ -71,22 +78,28 @@ public class BajaDialog extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int fila = tabla.getSelectedRow();
+        int filaVisual = tabla.getSelectedRow();
 
         if (e.getSource() == aceptar) {
-            if (fila == -1) {
+            if (filaVisual == -1) {
                 JOptionPane.showMessageDialog(null, "No ha seleccionado ningun empleado", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
             } else {
-                String dniTrabajorABorrar = datos[fila][0];
+                int filaModelo = tabla.convertRowIndexToModel(filaVisual);
+
+                String dniTrabajorABorrar = tabla.getModel().getValueAt(filaModelo, 0).toString();
                 int respuesta = JOptionPane.showConfirmDialog(null, "Esta seguro que quiere borrar al trabajador con DNI: " + dniTrabajorABorrar, "Borrar",
                         JOptionPane.YES_NO_OPTION);
                 switch (respuesta) {
                     case JOptionPane.YES_OPTION:
                         // Operaciones en caso afirmativo
-                        AccesoTrabajador.borrarTrabajador(dniTrabajorABorrar);
-                        JOptionPane.showMessageDialog(null, "Trabajador eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                        refrescarDatos();
+                        try {
+                            AccesoTrabajador.borrarTrabajador(dniTrabajorABorrar);
+                            JOptionPane.showMessageDialog(null, "Trabajador eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                            refrescarDatos();
+                        }catch(BDException ex){
+                            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                         break;
                     case JOptionPane.NO_OPTION:
                         // Operaciones en caso negativo

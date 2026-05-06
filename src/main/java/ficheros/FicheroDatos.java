@@ -67,23 +67,27 @@ public class FicheroDatos {
 			br = new BufferedReader(fr);
 
 			String linea = br.readLine();
+
 			while (linea != null) {
 				linea = linea.trim();
-				String[] datos = linea.split(";");
 
-				if(datos.length != 6){
-					throw new FicheroException(FicheroException.DATOS_INCOMPLETOS);
+				if(!linea.isEmpty()){
+					String[] datos = linea.split(";");
+
+					if(datos.length != 6){
+						throw new FicheroException(FicheroException.DATOS_INCOMPLETOS);
+					}
+
+					String dni = datos[0];
+					String nombre = datos[1];
+					String apellidos = datos[2];
+					String direccion = datos[3];
+					String telefono = datos[4];
+					String puesto = datos[5];
+
+					t = new Trabajador(dni,nombre,apellidos,direccion,telefono,puesto);
+					trabajadoresLeidos.add(t);
 				}
-
-				String dni = datos[0];
-				String nombre = datos[1];
-				String apellidos = datos[2];
-				String direccion = datos[3];
-				String telefono = datos[4];
-				String puesto = datos[5];
-
-				t = new Trabajador(dni,nombre,apellidos,direccion,telefono,puesto);
-				trabajadoresLeidos.add(t);
 
 				linea = br.readLine();
 			}			

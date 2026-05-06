@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import dao.AccesoTrabajador;
 import modelo.Trabajador;
@@ -37,7 +38,15 @@ public class ListarDialog extends JDialog implements ActionListener {
 		String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 		List<Trabajador> trajadores = AccesoTrabajador.obtenerTrabajadores();
 		datos = AccesoTrabajador.listarTrabajadores(trajadores);
-		tabla = new JTable(datos, columnas);
+
+		DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false; // Bloquea TODAS las celdas
+			}
+		};
+
+		tabla = new JTable(modelo);
 
 		tabla.setRowHeight(25);
 

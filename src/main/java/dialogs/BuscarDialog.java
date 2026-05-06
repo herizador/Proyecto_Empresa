@@ -56,7 +56,12 @@ public class BuscarDialog extends JFrame implements ActionListener {
         trajadores = AccesoTrabajador.obtenerTrabajadores();
         datos = AccesoTrabajador.listarTrabajadores(trajadores);
 
-        DefaultTableModel modelo = new DefaultTableModel(datos, columnas);
+        DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Bloquea TODAS las celdas
+            }
+        };
         tabla = new JTable(modelo);
 
         tabla.setAutoCreateRowSorter(true);
