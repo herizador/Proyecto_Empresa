@@ -50,6 +50,8 @@ public class BajaDialog extends JDialog implements ActionListener {
 
         tabla.setAutoCreateRowSorter(true);
 
+        tabla.setRowHeight(25);
+
         // Mete la tabla en un JCrollPane
         JScrollPane jsp = new JScrollPane(tabla);
         jsp.setPreferredSize(new Dimension(700, 600));

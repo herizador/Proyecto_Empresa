@@ -63,6 +63,8 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
 
         tabla = new JTable(modelo);
 
+        tabla.setRowHeight(25);
+
         JScrollPane jsp = new JScrollPane(tabla);
         jsp.setPreferredSize(new Dimension(700, 600));
         add(jsp);

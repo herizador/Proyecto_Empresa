@@ -61,6 +61,8 @@ public class BuscarDialog extends JFrame implements ActionListener {
 
         tabla.setAutoCreateRowSorter(true);
 
+        tabla.setRowHeight(25);
+
         JScrollPane jsp = new JScrollPane(tabla);
         jsp.setPreferredSize(new Dimension(700, 600));
         add(jsp);

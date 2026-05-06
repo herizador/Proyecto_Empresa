@@ -39,6 +39,8 @@ public class ListarDialog extends JDialog implements ActionListener {
 		datos = AccesoTrabajador.listarTrabajadores(trajadores);
 		tabla = new JTable(datos, columnas);
 
+		tabla.setRowHeight(25);
+
 		// Mete la tabla en un JCrollPane
 		JScrollPane jsp = new JScrollPane(tabla);
 		jsp.setPreferredSize(new Dimension(700, 600));
@@ -60,5 +62,4 @@ public class ListarDialog extends JDialog implements ActionListener {
 			dispose();
 		}
 	}
-
 }
