@@ -101,7 +101,7 @@ public class AccesoTrabajador {
             String queryActualizar = "UPDATE trabajador SET nombre = ?, apellidos = ?, direccion = ?, telefono = ?, puesto = ?  WHERE dni = ?";
             ps = conexion.prepareStatement(queryActualizar);
 
-            for(Trabajador trabajador : trabajadores) {
+            for (Trabajador trabajador : trabajadores) {
                 ps.setString(1, trabajador.getNombre());
                 ps.setString(2, trabajador.getApellidos());
                 ps.setString(3, trabajador.getDireccion());
@@ -302,10 +302,10 @@ public class AccesoTrabajador {
                 trabajadores.add(trabajadorAux);
             }
 
-            if(trabajadores.isEmpty()){
+            if (trabajadores.isEmpty()) {
                 throw new TrabajadorException(TrabajadorException.TRABAJADORES_NO_ENCONTRADOS);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
             throw new BDException(BDException.ERROR_ABRIR_CONEXION + e.getMessage());

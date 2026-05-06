@@ -82,14 +82,12 @@ public class BajaDialog extends JDialog implements ActionListener {
 
         if (e.getSource() == aceptar) {
             if (filaVisual == -1) {
-                JOptionPane.showMessageDialog(null, "No ha seleccionado ningun empleado", "ERROR",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No ha seleccionado ningun empleado", "ERROR", JOptionPane.ERROR_MESSAGE);
             } else {
                 int filaModelo = tabla.convertRowIndexToModel(filaVisual);
 
                 String dniTrabajorABorrar = tabla.getModel().getValueAt(filaModelo, 0).toString();
-                int respuesta = JOptionPane.showConfirmDialog(null, "Esta seguro que quiere borrar al trabajador con DNI: " + dniTrabajorABorrar, "Borrar",
-                        JOptionPane.YES_NO_OPTION);
+                int respuesta = JOptionPane.showConfirmDialog(null, "Esta seguro que quiere borrar al trabajador con DNI: " + dniTrabajorABorrar, "Borrar", JOptionPane.YES_NO_OPTION);
                 switch (respuesta) {
                     case JOptionPane.YES_OPTION:
                         // Operaciones en caso afirmativo
@@ -97,7 +95,7 @@ public class BajaDialog extends JDialog implements ActionListener {
                             AccesoTrabajador.borrarTrabajador(dniTrabajorABorrar);
                             JOptionPane.showMessageDialog(null, "Trabajador eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
                             refrescarDatos();
-                        }catch(BDException ex){
+                        } catch (BDException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
@@ -111,7 +109,7 @@ public class BajaDialog extends JDialog implements ActionListener {
         }
     }
 
-    public void refrescarDatos(){
+    public void refrescarDatos() {
         trajadores = AccesoTrabajador.obtenerTrabajadores();
         datos = AccesoTrabajador.listarTrabajadores(trajadores);
         String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};

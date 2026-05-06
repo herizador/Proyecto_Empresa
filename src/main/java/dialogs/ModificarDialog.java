@@ -141,7 +141,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
             String valorNuevo = tabla.getValueAt(fila, columna).toString();
             String valorOriginal = datos[fila][columna];
 
-            if(!valorNuevo.equals(valorOriginal)) {
+            if (!valorNuevo.equals(valorOriginal)) {
                 String dni = tabla.getValueAt(fila, 0).toString();
                 String nombre = tabla.getValueAt(fila, 1).toString();
                 String apellido = tabla.getValueAt(fila, 2).toString();
@@ -149,12 +149,12 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
                 String telefono = tabla.getValueAt(fila, 4).toString();
                 String puesto = tabla.getValueAt(fila, 5).toString();
 
-                if(LeerValidaciones.comprobarErrores(dni, nombre, apellido, direccion, telefono, puesto)) {
+                if (LeerValidaciones.comprobarErrores(dni, nombre, apellido, direccion, telefono, puesto)) {
                     Trabajador trabajadorAux = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
 
                     trabajadoresAModificar.removeIf(t -> t.getDni().equals(dni));
                     trabajadoresAModificar.add(trabajadorAux);
-                }else{
+                } else {
                     refrescarDatos();
                 }
             }
