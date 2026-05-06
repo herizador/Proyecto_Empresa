@@ -24,10 +24,12 @@ import modelo.Trabajador;
  */
 public class AltaDialog extends JDialog implements ActionListener, ItemListener {
 
+	String rutaResouse = "src/main/resources/";
+
 	/**
 	 * Imagen de check
 	 */
-	ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/images/check_verde.png"));
+	ImageIcon iconoOriginal = new ImageIcon(rutaResouse + "images/check_verde.png");
 	Image imagenRedimensionada = iconoOriginal.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
 	ImageIcon iconoCheck = new ImageIcon(imagenRedimensionada);
 
@@ -83,7 +85,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 
 	public void insertaPorFichero() {
         try {
-            List<Trabajador> trajadores = FicheroDatos.obtenerTrabajadores("ficheroDatos/empresa.csv");
+            List<Trabajador> trajadores = FicheroDatos.obtenerTrabajadores(rutaResouse + "ficheroDatos/empresa.csv");
 			AccesoTrabajador.insertarTrabajadorLista(trajadores);
 
 			JOptionPane.showMessageDialog(null, "Trabajadores insertados exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
