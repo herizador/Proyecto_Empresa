@@ -7,6 +7,7 @@ package modelo;
  * @author alumno
  */
 public class Trabajador {
+    private static String SEPARADOR = ";";
     private String dni;
     private String nombre;
     private String apellidos;
@@ -29,6 +30,10 @@ public class Trabajador {
         this.direccion = direccion;
         this.telefono = telefono;
         this.puesto = puesto;
+    }
+
+    public String toStringWithSeparators() {
+        return this.dni + SEPARADOR + this.nombre + SEPARADOR + this.apellidos + SEPARADOR + this.direccion + SEPARADOR + this.telefono + SEPARADOR + this.puesto;
     }
 
     /**

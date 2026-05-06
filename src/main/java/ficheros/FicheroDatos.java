@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dao.AccesoTrabajador;
+import exception.BDException;
 import exception.FicheroException;
 import exception.TrabajadorException;
 import modelo.Trabajador;
@@ -105,20 +106,47 @@ public class FicheroDatos {
         return trabajadoresLeidos;
     }
 
+    public static void exportarEmpleados(List<Trabajador> trabajadores) throws FicheroException {
+        BufferedWriter bw = null;
+
+        try{
+            File fichero = new File("exportaciones/exportarEmpleados.csv");
+            FileWriter fw = new FileWriter(fichero,false);
+            bw = new BufferedWriter(fw);
+
+            for(Trabajador t : trabajadores){
+                bw.write(t.toStringWithSeparators());
+                bw.newLine();
+            }
+        }catch (FileNotFoundException e) {
+            throw new FicheroException(FicheroException.ERROR_RUTA_INEXISTENTE);
+        } catch (IOException e) {
+            throw new FicheroException(FicheroException.ERROR_AL_LEER);
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+            } catch (IOException e) {
+                throw new FicheroException(FicheroException.ERROR_CERRAR_BUFFER);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         List<Trabajador> trabaj = null;
 
         try {
-            trabaj = FicheroDatos.obtenerTrabajadores("ficheroDatos\\empresa.csv");
-        } catch (FicheroException e) {
+            trabaj = AccesoTrabajador.obtenerTrabajadores();
+        } catch (BDException e) {
             System.out.println(e.getMessage());
         }
 
         try {
             if (trabaj != null) {
-                AccesoTrabajador.insertarTrabajadorLista(trabaj);
+                exportarEmpleados(trabaj);
             }
-        } catch (TrabajadorException e) {
+        } catch (FicheroException e) {
             System.out.println(e.getMessage());
         }
     }
