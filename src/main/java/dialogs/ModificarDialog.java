@@ -104,6 +104,9 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
 
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setDataVector(datos, columnas);
+
+        TableColumn columnaPuesto = tabla.getColumnModel().getColumn(5);
+        columnaPuesto.setCellEditor(new DefaultCellEditor(comboPuesto));
     }
 
     @Override
@@ -122,7 +125,17 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
                     trabajadoresAModificar.clear();
                     refrescarDatos();
                 } catch (TrabajadorException | BDException ex) {
-                    UtilsDialog.mensajeError(ex);
+                    List<String> puestos = AccesoTrabajador.obtenerPuestos();
+                    comboPuesto = new JComboBox<>();
+
+                    for (String p : puestos) {
+                        comboPuesto.addItem(p);
+                    }
+
+                    tabla.getModel().addTableModelListener(this);
+
+                    TableColumn columnaPuesto = tabla.getColumnModel().getColumn(5);
+                    columnaPuesto.setCellEditor(new DefaultCellEditor(comboPuesto));
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Modifica al menos un trabajador", "Error", JOptionPane.ERROR_MESSAGE);

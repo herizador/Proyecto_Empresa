@@ -34,7 +34,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     JTable tabla;
     DefaultTableModel modelo;
     String[][] datos;
-    String[] columnas = UtilsDialog.columnas();
+    String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto", "Borrar"};
 
     List<Trabajador> trabajadores;
     Set<Trabajador> trabajadoresAEliminar = new HashSet<>();

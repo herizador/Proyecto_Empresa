@@ -1,7 +1,12 @@
 package dialogs;
 
+import dao.AccesoTrabajador;
+import modelo.Trabajador;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class UtilsDialog {
     public static String rutaResouse = "src/main/resources/";
