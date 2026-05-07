@@ -3,6 +3,7 @@ package dialogs;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     DefaultTableModel modelo;
     String[][] datos;
     List<Trabajador> trabajadores;
-    Set<Trabajador> trabajadoresAEliminar;
+    Set<Trabajador> trabajadoresAEliminar = new HashSet<>();
 
     public BajaDialog() {
         JOptionPane.showMessageDialog(null, "Seleccione un empleado y presione 'Borrar' para dar de baja.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -68,6 +69,8 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
             }
         };
 
+        modelo.addTableModelListener(this);
+
         tabla = new JTable(modelo);
 
         tabla.setAutoCreateRowSorter(true);
@@ -93,29 +96,24 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int filaVisual = tabla.getSelectedRow();
-
         if (e.getSource() == aceptar) {
-            if (filaVisual == -1) {
+            if (trabajadoresAEliminar.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "No ha seleccionado ningun empleado", "ERROR", JOptionPane.ERROR_MESSAGE);
             } else {
-                int filaModelo = tabla.convertRowIndexToModel(filaVisual);
-
-                String dniTrabajorABorrar = tabla.getModel().getValueAt(filaModelo, 0).toString();
-                int respuesta = JOptionPane.showConfirmDialog(null, "Esta seguro que quiere borrar al trabajador con DNI: " + dniTrabajorABorrar, "Borrar", JOptionPane.YES_NO_OPTION);
+                int respuesta = JOptionPane.showConfirmDialog(null, "Esta seguro que quiere borrar a los trabajadores", "Borrar", JOptionPane.YES_NO_OPTION);
                 switch (respuesta) {
                     case JOptionPane.YES_OPTION:
                         // Operaciones en caso afirmativo
                         try {
-                            AccesoTrabajador.borrarTrabajador(dniTrabajorABorrar);
-                            JOptionPane.showMessageDialog(null, "Trabajador eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                            AccesoTrabajador.borrarTrabajador(trabajadoresAEliminar);
+                            JOptionPane.showMessageDialog(null, "Trabajador/es eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                            trabajadoresAEliminar.clear();
                             refrescarDatos();
                         } catch (BDException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     case JOptionPane.NO_OPTION:
-                        // Operaciones en caso negativo
                         break;
                 }
             }
@@ -127,7 +125,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     public void refrescarDatos() {
         trabajadores = AccesoTrabajador.obtenerTrabajadores();
         datos = AccesoTrabajador.listarTrabajadores(trabajadores);
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
+        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto", "Borrar"};
 
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setDataVector(datos, columnas);
@@ -137,22 +135,27 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     public void tableChanged(TableModelEvent e) {
         if(e.getType() == TableModelEvent.UPDATE){
             int fila = e.getFirstRow();
+            int columna = e.getColumn();
+
+            if (fila < 0 || columna < 0 || fila >= tabla.getRowCount()) {
+                return;
+            }
 
             String dni = modelo.getValueAt(fila, 0).toString();
+            String nombre = modelo.getValueAt(fila, 1).toString();
+            String apellido = modelo.getValueAt(fila, 2).toString();
+            String direccion = modelo.getValueAt(fila, 3).toString();
+            String telefono = modelo.getValueAt(fila, 4).toString();
+            String puesto = modelo.getValueAt(fila, 5).toString();
+
+            Trabajador trabajador = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
 
             boolean checkBox = (Boolean) modelo.getValueAt(fila, 6);
 
             if (checkBox) {
-                String nombre = modelo.getValueAt(fila, 1).toString();
-                String apellido = modelo.getValueAt(fila, 2).toString();
-                String direccion = modelo.getValueAt(fila, 3).toString();
-                String telefono = modelo.getValueAt(fila, 4).toString();
-                String puesto = modelo.getValueAt(fila, 5).toString();
-
-                Trabajador trabajador = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
                 trabajadoresAEliminar.add(trabajador);
             }else{
-                trabajadoresAEliminar.remove(dni);
+                trabajadoresAEliminar.remove(trabajador);
             }
 
             System.out.println(trabajadoresAEliminar);

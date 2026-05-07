@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class AccesoTrabajador {
     public static void altaTrabajador(Trabajador trabajador) throws BDException, TrabajadorException {
@@ -172,16 +173,26 @@ public class AccesoTrabajador {
         }
     }
 
-    public static void borrarTrabajador(String dni) throws BDException {
+    public static void borrarTrabajador(Set<Trabajador> trabajadorSet) throws BDException {
         Connection conexion = null;
         PreparedStatement ps;
 
         try {
             conexion = ConfigMySql.abrirConexion();
+
+            conexion.setAutoCommit(false);
+
             String queryDelete = "DELETE FROM trabajador WHERE dni = ?";
             ps = conexion.prepareStatement(queryDelete);
-            ps.setString(1, dni);
-            ps.executeUpdate();
+
+            for (Trabajador trabajador : trabajadorSet) {
+                ps.setString(1, trabajador.getDni());
+                ps.addBatch();
+            }
+
+            ps.executeBatch();
+
+            conexion.commit();
         } catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
