@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 import dao.AccesoTrabajador;
 import exception.BDException;
@@ -21,19 +20,22 @@ import modelo.Trabajador;
  * @author usuario
  */
 public class BajaDialog extends JDialog implements ActionListener, TableModelListener {
-
     /**
      * Imagen de check
      */
-    ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/images/check_verde.png"));
-    Image imagenRedimensionada = iconoOriginal.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-    ImageIcon iconoCheck = new ImageIcon(imagenRedimensionada);
+    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
 
     JButton aceptar;
     JButton cancelar;
+
+    /**
+     * tablas
+     */
     JTable tabla;
     DefaultTableModel modelo;
     String[][] datos;
+    String[] columnas = UtilsDialog.columnas();
+
     List<Trabajador> trabajadores;
     Set<Trabajador> trabajadoresAEliminar = new HashSet<>();
 
@@ -48,7 +50,6 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
         setLocationRelativeTo(null);
 
         // Crea un JTable, cada fila será un trabajador
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto", "Borrar"};
         trabajadores = AccesoTrabajador.obtenerTrabajadores();
         datos = AccesoTrabajador.listarTrabajadores(trabajadores);
 
@@ -110,7 +111,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
                             trabajadoresAEliminar.clear();
                             refrescarDatos();
                         } catch (BDException ex) {
-                            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            UtilsDialog.mensajeError(ex);
                         }
                         break;
                     case JOptionPane.NO_OPTION:
@@ -125,7 +126,6 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     public void refrescarDatos() {
         trabajadores = AccesoTrabajador.obtenerTrabajadores();
         datos = AccesoTrabajador.listarTrabajadores(trabajadores);
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto", "Borrar"};
 
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setDataVector(datos, columnas);
@@ -157,8 +157,6 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
             }else{
                 trabajadoresAEliminar.remove(trabajador);
             }
-
-            System.out.println(trabajadoresAEliminar);
         }
     }
 }

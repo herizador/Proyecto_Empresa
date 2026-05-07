@@ -27,6 +27,7 @@ public class BuscarDialog extends JFrame implements ActionListener {
     JTable tabla;
     List<Trabajador> trajadores;
     String[][] datos;
+    String[] columnas = UtilsDialog.columnas();
 
     /**
      * Botones
@@ -35,7 +36,11 @@ public class BuscarDialog extends JFrame implements ActionListener {
     JButton btnSalir;
 
     public BuscarDialog() {
-        JOptionPane.showMessageDialog(null, "Buscador de trabajadores:\n" + "- Seleccione un campo (DNI, Nombre...)\n" + "- Escriba lo que desea buscar (puede ser una parte del texto)\n" + "- Deje el campo vacío para ver a todos los trabajadores.", "¿Cómo buscar?", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, """
+                Buscador de trabajadores:
+                - Seleccione un campo (DNI, Nombre...)
+                - Escriba lo que desea buscar (puede ser una parte del texto)
+                - Deje el campo vacío para ver a todos los trabajadores.""", "¿Cómo buscar?", JOptionPane.INFORMATION_MESSAGE);
 
         setResizable(false);
         setTitle("Buscar Trabajadores");
@@ -43,14 +48,18 @@ public class BuscarDialog extends JFrame implements ActionListener {
         setLayout(new FlowLayout());
         setLocationRelativeTo(null);
 
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
         opciones = new JComboBox<>(columnas);
 
         filtrado = new JTextField(15);
         pFiltado = new JPanel();
 
+        btnBuscar = new JButton("Buscar");
+        btnBuscar.addActionListener(this);
+        add(btnBuscar);
+
         pFiltado.add(opciones);
         pFiltado.add(filtrado);
+        pFiltado.add(btnBuscar);
         add(pFiltado);
 
         trajadores = AccesoTrabajador.obtenerTrabajadores();
@@ -74,10 +83,6 @@ public class BuscarDialog extends JFrame implements ActionListener {
 
         setVisible(true);
 
-        btnBuscar = new JButton("Buscar");
-        btnBuscar.addActionListener(this);
-        add(btnBuscar);
-
         btnSalir = new JButton("Salir");
         btnSalir.addActionListener(this);
         add(btnSalir);
@@ -96,7 +101,7 @@ public class BuscarDialog extends JFrame implements ActionListener {
                 trajadores = AccesoTrabajador.buscarPorFiltro(columna, valor);
                 refrescarDatos(trajadores);
             } catch (TrabajadorException | BDException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                UtilsDialog.mensajeError(ex);
             }
         } else if (e.getSource() == btnSalir) {
             dispose();
@@ -105,7 +110,6 @@ public class BuscarDialog extends JFrame implements ActionListener {
 
     public void refrescarDatos(List<Trabajador> filtrado) {
         datos = AccesoTrabajador.listarTrabajadores(filtrado);
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setDataVector(datos, columnas);

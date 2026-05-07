@@ -29,13 +29,7 @@ public class AccesoTrabajador {
             conexion = ConfigMySql.abrirConexion();
 
             String queryInsertar = "INSERT INTO trabajador(dni, nombre, apellidos, direccion, telefono, puesto) VALUES(?,?,?,?,?,?)";
-            ps = conexion.prepareStatement(queryInsertar);
-            ps.setString(1, dni);
-            ps.setString(2, nombre);
-            ps.setString(3, apellidos);
-            ps.setString(4, direccion);
-            ps.setString(5, telefono);
-            ps.setString(6, puesto);
+            ps = getPreparedStatement(conexion, dni, nombre, apellidos, direccion, telefono, puesto, queryInsertar);
             ps.executeUpdate();
         } catch (SQLException e) {
             actualizarTrabajador(trabajador);
@@ -150,13 +144,7 @@ public class AccesoTrabajador {
             conexion = ConfigMySql.abrirConexion();
 
             String queryActualizar = "UPDATE trabajador SET nombre = ?, apellidos = ?, direccion = ?, telefono = ?, puesto = ?  WHERE dni = ?";
-            ps = conexion.prepareStatement(queryActualizar);
-            ps.setString(1, nombre);
-            ps.setString(2, apellidos);
-            ps.setString(3, direccion);
-            ps.setString(4, telefono);
-            ps.setString(5, puesto);
-            ps.setString(6, dni);
+            ps = getPreparedStatement(conexion, nombre, apellidos, direccion, telefono, puesto, dni, queryActualizar);
             int actualizado = ps.executeUpdate();
 
             if (actualizado == 0) {
@@ -235,17 +223,7 @@ public class AccesoTrabajador {
             ps = conexion.prepareStatement(queryConsulta);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                String dni = rs.getString("dni");
-                String nombre = rs.getString("nombre");
-                String apellidos = rs.getString("apellidos");
-                String direccion = rs.getString("direccion");
-                String telefono = rs.getString("telefono");
-                String puesto = rs.getString("puesto");
-
-                Trabajador trabajador = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
-                trabajadores.add(trabajador);
-            }
+            anadirTrabajadoresALista(rs, trabajadores);
         } catch (SQLException e) {
             throw new BDException(BDException.ERROR_QUERY + e.getMessage());
         } catch (BDException e) {
@@ -301,17 +279,7 @@ public class AccesoTrabajador {
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                String dni = rs.getString("dni");
-                String nombre = rs.getString("nombre");
-                String apellidos = rs.getString("apellidos");
-                String direccion = rs.getString("direccion");
-                String telefono = rs.getString("telefono");
-                String puesto = rs.getString("puesto");
-
-                Trabajador trabajadorAux = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
-                trabajadores.add(trabajadorAux);
-            }
+            anadirTrabajadoresALista(rs, trabajadores);
 
             if (trabajadores.isEmpty()) {
                 throw new TrabajadorException(TrabajadorException.TRABAJADORES_NO_ENCONTRADOS);
@@ -327,5 +295,35 @@ public class AccesoTrabajador {
         }
 
         return trabajadores;
+    }
+
+    private static void anadirTrabajadoresALista(ResultSet rs, List<Trabajador> trabajadores) throws BDException {
+        try {
+            while (rs.next()) {
+                String dni = rs.getString("dni");
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String direccion = rs.getString("direccion");
+                String telefono = rs.getString("telefono");
+                String puesto = rs.getString("puesto");
+
+                Trabajador trabajadorAux = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
+                trabajadores.add(trabajadorAux);
+            }
+        }catch (SQLException e) {
+            throw new BDException(BDException.ERROR_QUERY + e.getMessage());
+        }
+    }
+
+    private static PreparedStatement getPreparedStatement(Connection conexion, String dni, String nombre, String apellidos, String direccion, String telefono, String puesto, String queryInsertar) throws SQLException {
+        PreparedStatement ps;
+        ps = conexion.prepareStatement(queryInsertar);
+        ps.setString(1, dni);
+        ps.setString(2, nombre);
+        ps.setString(3, apellidos);
+        ps.setString(4, direccion);
+        ps.setString(5, telefono);
+        ps.setString(6, puesto);
+        return ps;
     }
 }

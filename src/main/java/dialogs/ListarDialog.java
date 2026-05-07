@@ -10,6 +10,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.AccesoTrabajador;
+import exception.BDException;
+import exception.TrabajadorException;
 import modelo.Trabajador;
 
 /**
@@ -19,6 +21,14 @@ public class ListarDialog extends JDialog implements ActionListener {
     JTable tabla;
     JButton cerrar;
     String[][] datos;
+    String[] columnas = UtilsDialog.columnas();
+
+    JTextField tFiltro;
+    JButton buscar;
+    JPanel pBotones;
+    JComboBox<String> comboBox;
+
+    List<Trabajador> trabajadores;
 
     public ListarDialog() {
         JOptionPane.showMessageDialog(null, "Presione la cabecera para ordenar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -27,16 +37,28 @@ public class ListarDialog extends JDialog implements ActionListener {
         // t�tulo del di�log
         setTitle("Listado Trabajadores en la Base de datos");
         // tama�o
-        setSize(750, 700);
+        setSize(750, 725);
         setLayout(new FlowLayout());
         // colocaci�n en el centro de la pantalla
         setLocationRelativeTo(null);
 
-        // Crea un JTable, cada fila será un trabajador
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
-        List<Trabajador> trajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trajadores);
+        tFiltro = new JTextField(15);
+        pBotones = new JPanel();
 
+        buscar = new JButton("Buscar");
+        buscar.addActionListener(this);
+
+        comboBox = new JComboBox<>(columnas);
+
+        pBotones.add(comboBox);
+        pBotones.add(tFiltro);
+        pBotones.add(buscar);
+        add(pBotones);
+
+        // Crea un JTable, cada fila será un trabajador
+
+        trabajadores = AccesoTrabajador.obtenerTrabajadores();
+        datos = AccesoTrabajador.listarTrabajadores(trabajadores);
         DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -62,11 +84,28 @@ public class ListarDialog extends JDialog implements ActionListener {
         setVisible(true);
     }
 
+    public void refrescarDatos(List<Trabajador> filtrado) {
+        datos = AccesoTrabajador.listarTrabajadores(filtrado);
+
+        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+        modelo.setDataVector(datos, columnas);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
         if (e.getSource() == cerrar) {
             dispose();
+        }else if (e.getSource() == buscar) {
+            String filtro = tFiltro.getText();
+            String columna = comboBox.getSelectedItem().toString();
+
+            try {
+                trabajadores = AccesoTrabajador.buscarPorFiltro(columna, filtro);
+                refrescarDatos(trabajadores);
+            } catch (TrabajadorException | BDException ex) {
+                UtilsDialog.mensajeError(ex);
+            }
         }
     }
 }

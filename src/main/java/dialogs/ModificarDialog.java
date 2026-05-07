@@ -24,9 +24,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     /**
      * Imagen de check
      */
-    ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/images/check_verde.png"));
-    Image imagenRedimensionada = iconoOriginal.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-    ImageIcon iconoCheck = new ImageIcon(imagenRedimensionada);
+    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
 
     /**
      * Tabla
@@ -124,7 +122,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
                     trabajadoresAModificar.clear();
                     refrescarDatos();
                 } catch (TrabajadorException | BDException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    UtilsDialog.mensajeError(ex);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Modifica al menos un trabajador", "Error", JOptionPane.ERROR_MESSAGE);

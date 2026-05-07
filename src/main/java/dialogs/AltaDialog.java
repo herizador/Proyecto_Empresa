@@ -15,7 +15,6 @@ import exception.FicheroException;
 import exception.TrabajadorException;
 import ficheros.FicheroDatos;
 import gui.LeerValidaciones;
-import gui.Validaciones;
 import modelo.Trabajador;
 
 /**
@@ -23,14 +22,12 @@ import modelo.Trabajador;
  */
 public class AltaDialog extends JDialog implements ActionListener, ItemListener {
 
-    String rutaResouse = "src/main/resources/";
+    String rutaResouse = UtilsDialog.rutaResouse;
 
     /**
      * Imagen de check
      */
-    ImageIcon iconoOriginal = new ImageIcon(rutaResouse + "images/check_verde.png");
-    Image imagenRedimensionada = iconoOriginal.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-    ImageIcon iconoCheck = new ImageIcon(imagenRedimensionada);
+    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
 
     /**
      * Elementos del JFrame
@@ -206,9 +203,9 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
                     JOptionPane.showMessageDialog(null, "Trabajador insertado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
                 }
             } catch (TrabajadorException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Actualizacion", JOptionPane.PLAIN_MESSAGE, iconoCheck);
             } catch (BDException e1) {
-                JOptionPane.showMessageDialog(null, e1.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                UtilsDialog.mensajeError(e1);
             }
         } else if (e.getSource() == cancelar) {
             dispose();
