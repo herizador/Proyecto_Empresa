@@ -4,9 +4,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import dao.AccesoTrabajador;
 import exception.BDException;
@@ -15,7 +19,7 @@ import modelo.Trabajador;
 /**
  * @author usuario
  */
-public class BajaDialog extends JDialog implements ActionListener {
+public class BajaDialog extends JDialog implements ActionListener, TableModelListener {
 
     /**
      * Imagen de check
@@ -29,7 +33,8 @@ public class BajaDialog extends JDialog implements ActionListener {
     JTable tabla;
     DefaultTableModel modelo;
     String[][] datos;
-    List<Trabajador> trajadores;
+    List<Trabajador> trabajadores;
+    Set<Trabajador> trabajadoresAEliminar;
 
     public BajaDialog() {
         JOptionPane.showMessageDialog(null, "Seleccione un empleado y presione 'Borrar' para dar de baja.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -42,14 +47,24 @@ public class BajaDialog extends JDialog implements ActionListener {
         setLocationRelativeTo(null);
 
         // Crea un JTable, cada fila será un trabajador
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
-        trajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trajadores);
+        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto", "Borrar"};
+        trabajadores = AccesoTrabajador.obtenerTrabajadores();
+        datos = AccesoTrabajador.listarTrabajadores(trabajadores);
 
         modelo = new DefaultTableModel(datos, columnas) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Bloquea TODAS las celdas
+                return column == 6; // Bloquea TODAS las celdas
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                // Al retornar Boolean.class, Swing usa automáticamente
+                // un JCheckBox tanto para mostrar como para editar.
+                if (columnIndex == 6) {
+                    return Boolean.class;
+                }
+                return String.class;
             }
         };
 
@@ -110,11 +125,37 @@ public class BajaDialog extends JDialog implements ActionListener {
     }
 
     public void refrescarDatos() {
-        trajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trajadores);
+        trabajadores = AccesoTrabajador.obtenerTrabajadores();
+        datos = AccesoTrabajador.listarTrabajadores(trabajadores);
         String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setDataVector(datos, columnas);
+    }
+
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        if(e.getType() == TableModelEvent.UPDATE){
+            int fila = e.getFirstRow();
+
+            String dni = modelo.getValueAt(fila, 0).toString();
+
+            boolean checkBox = (Boolean) modelo.getValueAt(fila, 6);
+
+            if (checkBox) {
+                String nombre = modelo.getValueAt(fila, 1).toString();
+                String apellido = modelo.getValueAt(fila, 2).toString();
+                String direccion = modelo.getValueAt(fila, 3).toString();
+                String telefono = modelo.getValueAt(fila, 4).toString();
+                String puesto = modelo.getValueAt(fila, 5).toString();
+
+                Trabajador trabajador = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
+                trabajadoresAEliminar.add(trabajador);
+            }else{
+                trabajadoresAEliminar.remove(dni);
+            }
+
+            System.out.println(trabajadoresAEliminar);
+        }
     }
 }

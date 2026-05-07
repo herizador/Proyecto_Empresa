@@ -39,6 +39,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
 
     JButton btnCancelar;
     JButton btnModificar;
+    JPanel pBotones;
 
     public ModificarDialog() {
         JOptionPane.showMessageDialog(null, "Se guardarán los datos de las celdas modificadas. Presione 'Modificar' al terminar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -82,13 +83,17 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
         TableColumn columnaPuesto = tabla.getColumnModel().getColumn(5);
         columnaPuesto.setCellEditor(new DefaultCellEditor(comboPuesto));
 
+        pBotones = new JPanel();
+
         btnModificar = new JButton("Modificar");
         btnModificar.addActionListener(this);
-        add(btnModificar);
+        pBotones.add(btnModificar);
 
         btnCancelar = new JButton("Cancelar");
         btnCancelar.addActionListener(this);
-        add(btnCancelar);
+        pBotones.add(btnCancelar);
+
+        add(pBotones);
 
         setVisible(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

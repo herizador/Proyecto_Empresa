@@ -3,6 +3,8 @@
  */
 package modelo;
 
+import java.util.Objects;
+
 /**
  * @author alumno
  */
@@ -118,6 +120,18 @@ public class Trabajador {
      */
     public void setPuesto(String puesto) {
         this.puesto = puesto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Trabajador that = (Trabajador) o;
+        return Objects.equals(dni, that.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dni);
     }
 
     @Override
