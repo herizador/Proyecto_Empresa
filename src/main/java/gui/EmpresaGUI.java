@@ -3,19 +3,12 @@ package gui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import dialogs.*;
-//import dialogs.ModificaDialog;
-//import dialogs.VerDialog;
-import exception.FicheroException;
-import ficheros.FicheroDatos;
-import modelo.Empresa;
-import modelo.Trabajador;
 
 /**
  * @author usuario
@@ -96,7 +89,7 @@ public class EmpresaGUI extends JFrame implements ActionListener {
     }
 
     /**
-     * @param args
+     * @param args programa principal
      */
     public static void main(String[] args) {
         new EmpresaGUI();

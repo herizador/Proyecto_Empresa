@@ -201,7 +201,13 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
                     Trabajador t = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
                     AccesoTrabajador.altaTrabajador(t);
                     JOptionPane.showMessageDialog(null, "Trabajador insertado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                    dispose();
+                }else{
+
+
+                    areaTelefono.setBackground(Color.RED);
                 }
+
             } catch (TrabajadorException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Actualizacion", JOptionPane.PLAIN_MESSAGE, iconoCheck);
             } catch (BDException e1) {

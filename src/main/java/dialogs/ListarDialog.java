@@ -31,8 +31,6 @@ public class ListarDialog extends JDialog implements ActionListener {
     List<Trabajador> trabajadores;
 
     public ListarDialog() {
-        JOptionPane.showMessageDialog(null, "Presione la cabecera para ordenar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-
         setResizable(false);
         // t�tulo del di�log
         setTitle("Listado Trabajadores en la Base de datos");

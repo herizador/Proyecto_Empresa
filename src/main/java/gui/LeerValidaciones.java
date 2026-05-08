@@ -10,7 +10,7 @@ public class LeerValidaciones {
      * @return verdadero si esta correcto los campos
      */
     public static boolean comprobarErrores(String dni, String nombre, String apellidos, String direccion, String telefono, String puesto) {
-        if (dni.isEmpty() || Validaciones.validarDni(dni)) {
+        if (dni.isEmpty() || !Validaciones.validarDni(dni)) {
             JOptionPane.showMessageDialog(null, "El DNI no tiene formato valido (8 numeros y 1 letra)", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         } else if (nombre.isEmpty()) {

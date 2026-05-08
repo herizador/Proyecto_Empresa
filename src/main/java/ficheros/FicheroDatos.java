@@ -7,7 +7,6 @@ import java.util.List;
 import dao.AccesoTrabajador;
 import exception.BDException;
 import exception.FicheroException;
-import exception.TrabajadorException;
 import modelo.Trabajador;
 
 /**
@@ -18,8 +17,8 @@ public class FicheroDatos {
     /**
      * Escribe un ArrayList en el fichero
      *
-     * @param ruta
-     * @param trabajadores
+     * @param ruta ruta
+     * @param trabajadores lista
      */
     public static void escribirTrabajadores(String ruta, ArrayList<Trabajador> trabajadores) {
 
