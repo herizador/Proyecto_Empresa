@@ -25,7 +25,7 @@ public class BuscarDialog extends JFrame implements ActionListener {
      * Tabla
      */
     JTable tabla;
-    List<Trabajador> trajadores;
+    List<Trabajador> trabajadores;
     String[][] datos;
     String[] columnas = UtilsDialog.columnas();
 
@@ -62,8 +62,12 @@ public class BuscarDialog extends JFrame implements ActionListener {
         pFiltado.add(btnBuscar);
         add(pFiltado);
 
-        trajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trajadores);
+        try {
+            trabajadores = AccesoTrabajador.obtenerTrabajadores();
+            datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
+        }
 
         DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
             @Override
@@ -98,8 +102,8 @@ public class BuscarDialog extends JFrame implements ActionListener {
             String valor = filtrado.getText();
 
             try {
-                trajadores = AccesoTrabajador.buscarPorFiltro(columna, valor);
-                refrescarDatos(trajadores);
+                trabajadores = AccesoTrabajador.buscarPorFiltro(columna, valor);
+                refrescarDatos(trabajadores);
             } catch (TrabajadorException | BDException ex) {
                 UtilsDialog.mensajeError(ex);
             }
@@ -109,9 +113,12 @@ public class BuscarDialog extends JFrame implements ActionListener {
     }
 
     public void refrescarDatos(List<Trabajador> filtrado) {
-        datos = AccesoTrabajador.listarTrabajadores(filtrado);
-
-        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-        modelo.setDataVector(datos, columnas);
+        try {
+            datos = AccesoTrabajador.listarTrabajadores(filtrado);
+            DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+            modelo.setDataVector(datos, columnas);
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
+        }
     }
 }

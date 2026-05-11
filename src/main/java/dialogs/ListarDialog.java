@@ -54,9 +54,13 @@ public class ListarDialog extends JDialog implements ActionListener {
         add(pBotones);
 
         // Crea un JTable, cada fila será un trabajador
+        try {
+            trabajadores = AccesoTrabajador.obtenerTrabajadores();
+            datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
+        }
 
-        trabajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trabajadores);
         DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -83,10 +87,13 @@ public class ListarDialog extends JDialog implements ActionListener {
     }
 
     public void refrescarDatos(List<Trabajador> filtrado) {
-        datos = AccesoTrabajador.listarTrabajadores(filtrado);
-
-        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-        modelo.setDataVector(datos, columnas);
+        try {
+            datos = AccesoTrabajador.listarTrabajadores(filtrado);
+            DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+            modelo.setDataVector(datos, columnas);
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
+        }
     }
 
     @Override

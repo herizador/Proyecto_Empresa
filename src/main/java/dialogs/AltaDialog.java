@@ -151,9 +151,15 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
         comboPuesto = new JComboBox<>();
         comboPuesto.addItem("Elija Puesto");
 
-        List<String> puestos = AccesoTrabajador.obtenerPuestos();
-        for (String puesto : puestos) {
-            comboPuesto.addItem(puesto);
+        List<String> puestos;
+        try {
+            puestos = AccesoTrabajador.obtenerPuestos();
+
+            for (String puesto : puestos) {
+                comboPuesto.addItem(puesto);
+            }
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
         }
 
         comboPuesto.addItemListener(this);
@@ -191,23 +197,72 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == aceptar) {
             try {
-                dni = areaDni.getText();
-                nombre = areaNombre.getText();
-                apellidos = areaApellidos.getText();
-                direccion = areaDireccion.getText();
-                telefono = areaTelefono.getText();
+                boolean error_validacion = false;
 
-                if (LeerValidaciones.comprobarErrores(dni, nombre, apellidos, direccion, telefono, puesto)) {
+                dni = areaDni.getText();
+                if (LeerValidaciones.validarDNI(dni)) {
+                    areaDni.setForeground(Color.WHITE);
+                    areaDni.setBackground(Color.RED);
+                    error_validacion = true;
+                }else{
+                    areaDni.setForeground(Color.BLACK);
+                    areaDni.setBackground(Color.WHITE);
+                }
+
+                nombre = areaNombre.getText();
+                if (LeerValidaciones.validarNombre(nombre)) {
+                    areaNombre.setForeground(Color.WHITE);
+                    areaNombre.setBackground(Color.RED);
+                    error_validacion = true;
+                }else{
+                    areaNombre.setForeground(Color.BLACK);
+                    areaNombre.setBackground(Color.WHITE);
+                }
+
+                apellidos = areaApellidos.getText();
+                if (LeerValidaciones.validarApellidos(apellidos)) {
+                    areaApellidos.setForeground(Color.WHITE);
+                    areaApellidos.setBackground(Color.RED);
+                    error_validacion = true;
+                }else{
+                    areaApellidos.setForeground(Color.BLACK);
+                    areaApellidos.setBackground(Color.WHITE);
+                }
+
+                direccion = areaDireccion.getText();
+                if (LeerValidaciones.validarDireccion(direccion)) {
+                    areaDireccion.setForeground(Color.WHITE);
+                    areaDireccion.setBackground(Color.RED);
+                    error_validacion = true;
+                }else {
+                    areaDireccion.setForeground(Color.BLACK);
+                    areaDireccion.setBackground(Color.WHITE);
+                }
+
+                telefono = areaTelefono.getText();
+                if (LeerValidaciones.validarTelefono(telefono)) {
+                    areaTelefono.setForeground(Color.WHITE);
+                    areaTelefono.setBackground(Color.RED);
+                    error_validacion = true;
+                }else{
+                    areaTelefono.setForeground(Color.BLACK);
+                    areaTelefono.setBackground(Color.WHITE);
+                }
+
+                if(LeerValidaciones.validarPuesto(puesto)){
+                    comboPuesto.setForeground(Color.WHITE);
+                    comboPuesto.setBackground(Color.RED);
+                }else{
+                    comboPuesto.setForeground(Color.BLACK);
+                    comboPuesto.setBackground(Color.WHITE);
+                }
+
+                if(!error_validacion){
                     Trabajador t = new Trabajador(dni, nombre, apellidos, direccion, telefono, puesto);
                     AccesoTrabajador.altaTrabajador(t);
                     JOptionPane.showMessageDialog(null, "Trabajador insertado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
                     dispose();
-                }else{
-
-
-                    areaTelefono.setBackground(Color.RED);
                 }
-
             } catch (TrabajadorException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Actualizacion", JOptionPane.PLAIN_MESSAGE, iconoCheck);
             } catch (BDException e1) {

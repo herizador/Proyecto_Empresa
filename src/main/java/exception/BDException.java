@@ -1,6 +1,6 @@
 package exception;
 
-public class BDException extends RuntimeException {
+public class BDException extends Exception {
     public static final String ERROR_ABRIR_CONEXION = "Error al abrir conexion ";
     public static final String ERROR_QUERY = "Error en la consulta ";
     public static final String ERROR_CERRAR_CONEXION = "Error al cerrar conexion ";

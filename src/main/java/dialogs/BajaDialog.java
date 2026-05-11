@@ -50,8 +50,12 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
         setLocationRelativeTo(null);
 
         // Crea un JTable, cada fila será un trabajador
-        trabajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+        try {
+            trabajadores = AccesoTrabajador.obtenerTrabajadores();
+            datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
+        }
 
         modelo = new DefaultTableModel(datos, columnas) {
             @Override
@@ -124,11 +128,14 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     }
 
     public void refrescarDatos() {
-        trabajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trabajadores);
-
-        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-        modelo.setDataVector(datos, columnas);
+        try {
+            trabajadores = AccesoTrabajador.obtenerTrabajadores();
+            datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+            DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+            modelo.setDataVector(datos, columnas);
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
+        }
     }
 
     @Override

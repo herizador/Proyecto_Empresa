@@ -29,11 +29,11 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     /**
      * Tabla
      */
-    List<Trabajador> trajadores;
+    List<Trabajador> trabajadores;
     String[][] datos;
     JTable tabla;
     DefaultTableModel modelo;
-    JComboBox<String> comboPuesto;
+    JComboBox<String> comboPuesto = new JComboBox<>();
 
     JButton btnCancelar;
     JButton btnModificar;
@@ -50,8 +50,13 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
         setLocationRelativeTo(null);
 
         String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
-        trajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trajadores);
+
+        try {
+            trabajadores = AccesoTrabajador.obtenerTrabajadores();
+            datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
+        }
 
         modelo = new DefaultTableModel(datos, columnas) {
             @Override
@@ -69,11 +74,15 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
         jsp.setPreferredSize(new Dimension(700, 600));
         add(jsp);
 
-        List<String> puestos = AccesoTrabajador.obtenerPuestos();
-        comboPuesto = new JComboBox<>();
+        List<String> puestos;
+        try {
+            puestos = AccesoTrabajador.obtenerPuestos();
 
-        for (String p : puestos) {
-            comboPuesto.addItem(p);
+            for (String puesto : puestos) {
+                comboPuesto.addItem(puesto);
+            }
+        } catch (BDException e) {
+            UtilsDialog.mensajeError(e);
         }
 
         tabla.getModel().addTableModelListener(this);
@@ -98,15 +107,19 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     }
 
     public void refrescarDatos() {
-        trajadores = AccesoTrabajador.obtenerTrabajadores();
-        datos = AccesoTrabajador.listarTrabajadores(trajadores);
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
+        try{
+            trabajadores = AccesoTrabajador.obtenerTrabajadores();
+            datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+            String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 
-        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-        modelo.setDataVector(datos, columnas);
+            DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+            modelo.setDataVector(datos, columnas);
 
-        TableColumn columnaPuesto = tabla.getColumnModel().getColumn(5);
-        columnaPuesto.setCellEditor(new DefaultCellEditor(comboPuesto));
+            TableColumn columnaPuesto = tabla.getColumnModel().getColumn(5);
+            columnaPuesto.setCellEditor(new DefaultCellEditor(comboPuesto));
+        }catch (BDException e){
+            UtilsDialog.mensajeError(e);
+        }
     }
 
     @Override
@@ -125,17 +138,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
                     trabajadoresAModificar.clear();
                     refrescarDatos();
                 } catch (TrabajadorException | BDException ex) {
-                    List<String> puestos = AccesoTrabajador.obtenerPuestos();
-                    comboPuesto = new JComboBox<>();
-
-                    for (String p : puestos) {
-                        comboPuesto.addItem(p);
-                    }
-
-                    tabla.getModel().addTableModelListener(this);
-
-                    TableColumn columnaPuesto = tabla.getColumnModel().getColumn(5);
-                    columnaPuesto.setCellEditor(new DefaultCellEditor(comboPuesto));
+                    UtilsDialog.mensajeError(ex);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Modifica al menos un trabajador", "Error", JOptionPane.ERROR_MESSAGE);
@@ -146,6 +149,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     @Override
     public void tableChanged(TableModelEvent e) {
         if (e.getType() == TableModelEvent.UPDATE) {
+            boolean error_validacion = false;
             int fila = e.getFirstRow();
             int columna = e.getColumn();
 
@@ -168,7 +172,11 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
             String telefono = tabla.getValueAt(fila, 4).toString();
             String puesto = tabla.getValueAt(fila, 5).toString();
 
-            if (LeerValidaciones.comprobarErrores(dni, nombre, apellido, direccion, telefono, puesto)) {
+            if(LeerValidaciones.validarNombre(nombre) || LeerValidaciones.validarApellidos(apellido) || LeerValidaciones.validarDireccion(direccion) || LeerValidaciones.validarTelefono(telefono) || LeerValidaciones.validarPuesto(puesto)) {
+                error_validacion = true;
+            }
+
+            if (!error_validacion) {
                 Trabajador trabajadorAux = new Trabajador(dni, nombre, apellido, direccion, telefono, puesto);
 
                 trabajadoresAModificar.removeIf(t -> t.getDni().equals(dni));
