@@ -29,6 +29,11 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     JButton cancelar;
 
     /**
+     * Panel de busqueda
+     */
+    JPanel panelBusqueda;
+
+    /**
      * tablas
      */
     JTable tabla;
@@ -45,9 +50,12 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
         setResizable(false);
         // t�tulo del di�log
         setTitle("Baja Trabajador");
-        setSize(750, 700);
+        setSize(750, 725);
         setLayout(new FlowLayout());
         setLocationRelativeTo(null);
+
+        panelBusqueda = UtilsDialog.barraDeBusqueda(this);
+        add(panelBusqueda);
 
         // Crea un JTable, cada fila será un trabajador
         try {
@@ -101,29 +109,34 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == aceptar) {
-            if (trabajadoresAEliminar.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "No ha seleccionado ningun empleado", "ERROR", JOptionPane.ERROR_MESSAGE);
-            } else {
-                int respuesta = JOptionPane.showConfirmDialog(null, "Esta seguro que quiere borrar a los trabajadores", "Borrar", JOptionPane.YES_NO_OPTION);
-                switch (respuesta) {
-                    case JOptionPane.YES_OPTION:
-                        // Operaciones en caso afirmativo
-                        try {
-                            AccesoTrabajador.borrarTrabajador(trabajadoresAEliminar);
-                            JOptionPane.showMessageDialog(null, "Trabajador/es eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                            trabajadoresAEliminar.clear();
-                            refrescarDatos();
-                        } catch (BDException ex) {
-                            UtilsDialog.mensajeError(ex);
-                        }
-                        break;
-                    case JOptionPane.NO_OPTION:
-                        break;
+        try {
+            if (e.getSource() == aceptar) {
+                if (trabajadoresAEliminar.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "No ha seleccionado ningun empleado", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    int respuesta = JOptionPane.showConfirmDialog(null, "Esta seguro que quiere borrar a los trabajadores", "Borrar", JOptionPane.YES_NO_OPTION);
+                    switch (respuesta) {
+                        case JOptionPane.YES_OPTION:
+                            // Operaciones en caso afirmativo
+                                AccesoTrabajador.borrarTrabajador(trabajadoresAEliminar);
+                                JOptionPane.showMessageDialog(null, "Trabajador/es eliminado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                                trabajadoresAEliminar.clear();
+                                refrescarDatos();
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            break;
+                    }
                 }
+            } else if (e.getSource() == cancelar) {
+                dispose();
+            } else if (e.getActionCommand().equals("Buscar")) {
+                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
+
+                String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+                UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);
             }
-        } else if (e.getSource() == cancelar) {
-            dispose();
+        } catch (BDException ex) {
+            UtilsDialog.mensajeError(ex);
         }
     }
 
@@ -140,7 +153,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
 
     @Override
     public void tableChanged(TableModelEvent e) {
-        if(e.getType() == TableModelEvent.UPDATE){
+        if (e.getType() == TableModelEvent.UPDATE) {
             int fila = e.getFirstRow();
             int columna = e.getColumn();
 
@@ -161,7 +174,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
 
             if (checkBox) {
                 trabajadoresAEliminar.add(trabajador);
-            }else{
+            } else {
                 trabajadoresAEliminar.remove(trabajador);
             }
         }

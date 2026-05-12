@@ -23,10 +23,7 @@ public class ListarDialog extends JDialog implements ActionListener {
     String[][] datos;
     String[] columnas = UtilsDialog.columnas();
 
-    JTextField tFiltro;
-    JButton buscar;
-    JPanel pBotones;
-    JComboBox<String> comboBox;
+    JPanel panelBusqueda;
 
     List<Trabajador> trabajadores;
 
@@ -40,18 +37,8 @@ public class ListarDialog extends JDialog implements ActionListener {
         // colocaci�n en el centro de la pantalla
         setLocationRelativeTo(null);
 
-        tFiltro = new JTextField(15);
-        pBotones = new JPanel();
-
-        buscar = new JButton("Buscar");
-        buscar.addActionListener(this);
-
-        comboBox = new JComboBox<>(columnas);
-
-        pBotones.add(comboBox);
-        pBotones.add(tFiltro);
-        pBotones.add(buscar);
-        add(pBotones);
+        panelBusqueda = UtilsDialog.barraDeBusqueda(this);
+        add(panelBusqueda);
 
         // Crea un JTable, cada fila será un trabajador
         try {
@@ -98,19 +85,17 @@ public class ListarDialog extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        if (e.getSource() == cerrar) {
-            dispose();
-        }else if (e.getSource() == buscar) {
-            String filtro = tFiltro.getText();
-            String columna = comboBox.getSelectedItem().toString();
+        try {
+            if (e.getSource() == cerrar) {
+                dispose();
+            } else if (e.getActionCommand().equals("Buscar")) {
+                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
 
-            try {
-                trabajadores = AccesoTrabajador.buscarPorFiltro(columna, filtro);
-                refrescarDatos(trabajadores);
-            } catch (TrabajadorException | BDException ex) {
-                UtilsDialog.mensajeError(ex);
+                String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+                UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);
             }
+        } catch (BDException ex) {
+            UtilsDialog.mensajeError(ex);
         }
     }
 }

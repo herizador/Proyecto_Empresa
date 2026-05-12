@@ -18,8 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ModificarDialog extends JDialog implements ActionListener, TableModelListener {
-
     List<Trabajador> trabajadoresAModificar = new LinkedList<>();
+
+    /**
+     * Panel de busqueda
+     */
+    JPanel panelBusqueda;
 
     /**
      * Imagen de check
@@ -34,6 +38,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     JTable tabla;
     DefaultTableModel modelo;
     JComboBox<String> comboPuesto = new JComboBox<>();
+    String[] columnas = UtilsDialog.columnas();
 
     JButton btnCancelar;
     JButton btnModificar;
@@ -45,11 +50,12 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
         setResizable(false);
         // t�tulo del di�log
         setTitle("Modificar Trabajador");
-        setSize(750, 700);
+        setSize(750, 725);
         setLayout(new FlowLayout());
         setLocationRelativeTo(null);
 
-        String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
+        panelBusqueda = UtilsDialog.barraDeBusqueda(this);
+        add(panelBusqueda);
 
         try {
             trabajadores = AccesoTrabajador.obtenerTrabajadores();
@@ -110,7 +116,6 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
         try{
             trabajadores = AccesoTrabajador.obtenerTrabajadores();
             datos = AccesoTrabajador.listarTrabajadores(trabajadores);
-            String[] columnas = {"DNI", "Nombre", "Apellidos", "Direccion", "Telefono", "Puesto"};
 
             DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
             modelo.setDataVector(datos, columnas);
@@ -124,25 +129,30 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnCancelar) {
-            dispose();
-        } else if (e.getSource() == btnModificar) {
-            if (tabla.isEditing()) {
-                tabla.getCellEditor().stopCellEditing();
-            }
-
-            if (!trabajadoresAModificar.isEmpty()) {
-                try {
-                    AccesoTrabajador.actualizarTrabajadorLista(trabajadoresAModificar);
-                    JOptionPane.showMessageDialog(null, "Trabajador/es modificado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                    trabajadoresAModificar.clear();
-                    refrescarDatos();
-                } catch (TrabajadorException | BDException ex) {
-                    UtilsDialog.mensajeError(ex);
+        try {
+            if (e.getSource() == btnCancelar) {
+                dispose();
+            } else if (e.getSource() == btnModificar) {
+                if (tabla.isEditing()) {
+                    tabla.getCellEditor().stopCellEditing();
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Modifica al menos un trabajador", "Error", JOptionPane.ERROR_MESSAGE);
+
+                if (!trabajadoresAModificar.isEmpty()) {
+                        AccesoTrabajador.actualizarTrabajadorLista(trabajadoresAModificar);
+                        JOptionPane.showMessageDialog(null, "Trabajador/es modificado exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                        trabajadoresAModificar.clear();
+                        refrescarDatos();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Modifica al menos un trabajador", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else if (e.getActionCommand().equals("Buscar")) {
+                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
+
+                String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+                UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);
             }
+        }catch (BDException | TrabajadorException ex) {
+            UtilsDialog.mensajeError(ex);
         }
     }
 

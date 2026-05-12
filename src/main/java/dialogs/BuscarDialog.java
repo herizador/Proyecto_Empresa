@@ -17,9 +17,7 @@ public class BuscarDialog extends JFrame implements ActionListener {
     /**
      * Filtado
      */
-    JPanel pFiltado;
-    JComboBox<String> opciones;
-    JTextField filtrado;
+    JPanel panelBusqueda;
 
     /**
      * Tabla
@@ -32,7 +30,6 @@ public class BuscarDialog extends JFrame implements ActionListener {
     /**
      * Botones
      */
-    JButton btnBuscar;
     JButton btnSalir;
 
     public BuscarDialog() {
@@ -48,19 +45,8 @@ public class BuscarDialog extends JFrame implements ActionListener {
         setLayout(new FlowLayout());
         setLocationRelativeTo(null);
 
-        opciones = new JComboBox<>(columnas);
-
-        filtrado = new JTextField(15);
-        pFiltado = new JPanel();
-
-        btnBuscar = new JButton("Buscar");
-        btnBuscar.addActionListener(this);
-        add(btnBuscar);
-
-        pFiltado.add(opciones);
-        pFiltado.add(filtrado);
-        pFiltado.add(btnBuscar);
-        add(pFiltado);
+        panelBusqueda = UtilsDialog.barraDeBusqueda(this);
+        add(panelBusqueda);
 
         try {
             trabajadores = AccesoTrabajador.obtenerTrabajadores();
@@ -97,28 +83,17 @@ public class BuscarDialog extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnBuscar) {
-            String columna = opciones.getSelectedItem().toString();
-            String valor = filtrado.getText();
-
-            try {
-                trabajadores = AccesoTrabajador.buscarPorFiltro(columna, valor);
-                refrescarDatos(trabajadores);
-            } catch (TrabajadorException | BDException ex) {
-                UtilsDialog.mensajeError(ex);
-            }
-        } else if (e.getSource() == btnSalir) {
-            dispose();
-        }
-    }
-
-    public void refrescarDatos(List<Trabajador> filtrado) {
         try {
-            datos = AccesoTrabajador.listarTrabajadores(filtrado);
-            DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-            modelo.setDataVector(datos, columnas);
-        } catch (BDException e) {
-            UtilsDialog.mensajeError(e);
+            if (e.getActionCommand().equals("Buscar")) {
+                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
+
+                String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
+                UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);
+            } else if (e.getSource() == btnSalir) {
+                dispose();
+            }
+        }catch (BDException ex) {
+            UtilsDialog.mensajeError(ex);
         }
     }
 }
