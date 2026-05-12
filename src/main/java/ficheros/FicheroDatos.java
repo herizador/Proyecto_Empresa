@@ -3,9 +3,8 @@ package ficheros;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.*;
 
-import dao.AccesoTrabajador;
-import exception.BDException;
 import exception.FicheroException;
 import modelo.Trabajador;
 
@@ -13,45 +12,11 @@ import modelo.Trabajador;
  * @author alumno
  */
 public class FicheroDatos {
-
-    /**
-     * Escribe un ArrayList en el fichero
-     *
-     * @param ruta ruta
-     * @param trabajadores lista
-     */
-    public static void escribirTrabajadores(String ruta, ArrayList<Trabajador> trabajadores) {
-
-        DataOutputStream fichero = null;
-        try {
-            fichero = new DataOutputStream(new FileOutputStream(ruta));
-            for (int i = 0; i < trabajadores.size(); i++) {
-                fichero.writeUTF(trabajadores.get(i).getDni());
-                fichero.writeUTF(trabajadores.get(i).getNombre());
-                fichero.writeUTF(trabajadores.get(i).getApellidos());
-                fichero.writeUTF(trabajadores.get(i).getDireccion());
-                fichero.writeUTF(trabajadores.get(i).getTelefono());
-                fichero.writeUTF(trabajadores.get(i).getPuesto());
-            }
-        } catch (FileNotFoundException e1) {
-            System.out.printf("Error al abrir fichero para escritura");
-        } catch (IOException e) {
-            System.out.printf("Error al escribir en el fichero%n");
-        } finally {
-            try {
-                fichero.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * Devuelve un arraylist con los trabajadores del fichero
      *
-     * @param rutaFichero
-     * @return
+     * @param rutaFichero ruta
+     * @return lista
      */
     public static List<Trabajador> obtenerTrabajadores(String rutaFichero) throws FicheroException {
         BufferedReader br = null;
@@ -105,11 +70,11 @@ public class FicheroDatos {
         return trabajadoresLeidos;
     }
 
-    public static void exportarEmpleados(List<Trabajador> trabajadores) throws FicheroException {
+    public static void exportarEmpleadosCSV(List<Trabajador> trabajadores, String ruta) throws FicheroException {
         BufferedWriter bw = null;
 
         try{
-            File fichero = new File("exportaciones/exportarEmpleados.csv");
+            File fichero = new File(ruta + "/Empleados.csv");
             FileWriter fw = new FileWriter(fichero,false);
             bw = new BufferedWriter(fw);
 
@@ -132,21 +97,29 @@ public class FicheroDatos {
         }
     }
 
-    public static void main(String[] args) {
-        List<Trabajador> trabaj = null;
+    public static void exportarEmpleadosJSON(List<Trabajador> trabajadores, String ruta) throws FicheroException{
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(trabajadores);
 
-        try {
-            trabaj = AccesoTrabajador.obtenerTrabajadores();
-        } catch (BDException e) {
-            System.out.println(e.getMessage());
-        }
+        BufferedWriter bw = null;
+        try{
+            File fichero = new File(ruta + File.separator + "Empleados.json");
+            FileWriter fw = new FileWriter(fichero,false);
+            bw = new BufferedWriter(fw);
 
-        try {
-            if (trabaj != null) {
-                exportarEmpleados(trabaj);
+            bw.write(json);
+        }catch (FileNotFoundException e) {
+            throw new FicheroException(FicheroException.ERROR_RUTA_INEXISTENTE);
+        } catch (IOException e) {
+            throw new FicheroException(FicheroException.ERROR_AL_LEER);
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+            } catch (IOException e) {
+                throw new FicheroException(FicheroException.ERROR_CERRAR_BUFFER);
             }
-        } catch (FicheroException e) {
-            System.out.println(e.getMessage());
         }
     }
 }

@@ -45,8 +45,6 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     JPanel pBotones;
 
     public ModificarDialog() {
-        JOptionPane.showMessageDialog(null, "Se guardarán los datos de las celdas modificadas. Presione 'Modificar' al terminar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-
         setResizable(false);
         // t�tulo del di�log
         setTitle("Modificar Trabajador");
@@ -146,7 +144,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
                     JOptionPane.showMessageDialog(null, "Modifica al menos un trabajador", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else if (e.getActionCommand().equals("Buscar")) {
-                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
+                trabajadores = UtilsDialog.buscarPorFiltro(panelBusqueda);
 
                 String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
                 UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);

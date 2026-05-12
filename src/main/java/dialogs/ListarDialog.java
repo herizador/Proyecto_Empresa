@@ -11,19 +11,37 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.AccesoTrabajador;
 import exception.BDException;
-import exception.TrabajadorException;
+import exception.FicheroException;
+import ficheros.FicheroDatos;
 import modelo.Trabajador;
 
 /**
  * @author usuario
  */
 public class ListarDialog extends JDialog implements ActionListener {
+    /**
+     * tabla
+     */
     JTable tabla;
     JButton cerrar;
     String[][] datos;
     String[] columnas = UtilsDialog.columnas();
 
+    /**
+     * check
+     */
+    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
+
+    /**
+     * Panel de busqueda
+     */
     JPanel panelBusqueda;
+
+    /**
+     * Botones
+     */
+    JButton botonExportarCSV;
+    JButton botonExportarJSON;
 
     List<Trabajador> trabajadores;
 
@@ -66,21 +84,19 @@ public class ListarDialog extends JDialog implements ActionListener {
 
         tabla.setAutoCreateRowSorter(true);
 
+        botonExportarCSV = new JButton("Exportar en CSV");
+        botonExportarCSV.addActionListener(this);
+        add(botonExportarCSV);
+
+        botonExportarJSON = new JButton("Exportar en JSON");
+        botonExportarJSON.addActionListener(this);
+        add(botonExportarJSON);
+
         cerrar = new JButton("Salir");
         cerrar.addActionListener(this);
         add(cerrar);
 
         setVisible(true);
-    }
-
-    public void refrescarDatos(List<Trabajador> filtrado) {
-        try {
-            datos = AccesoTrabajador.listarTrabajadores(filtrado);
-            DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-            modelo.setDataVector(datos, columnas);
-        } catch (BDException e) {
-            UtilsDialog.mensajeError(e);
-        }
     }
 
     @Override
@@ -89,12 +105,26 @@ public class ListarDialog extends JDialog implements ActionListener {
             if (e.getSource() == cerrar) {
                 dispose();
             } else if (e.getActionCommand().equals("Buscar")) {
-                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
+                trabajadores = UtilsDialog.buscarPorFiltro(panelBusqueda);
 
                 String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
                 UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);
+            } else if (e.getSource() == botonExportarCSV) {
+                String ruta = UtilsDialog.guardarFichero(this);
+
+                if (ruta != null) {
+                    FicheroDatos.exportarEmpleadosCSV(trabajadores, ruta);
+                    JOptionPane.showMessageDialog(this, "Archivo CSV exportado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                }
+            } else if (e.getSource() == botonExportarJSON) {
+                String ruta = UtilsDialog.guardarFichero(this);
+
+                if (ruta != null) {
+                    FicheroDatos.exportarEmpleadosJSON(trabajadores, ruta);
+                    JOptionPane.showMessageDialog(this, "Archivo JSON exportado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
+                }
             }
-        } catch (BDException ex) {
+        } catch (BDException | FicheroException ex) {
             UtilsDialog.mensajeError(ex);
         }
     }

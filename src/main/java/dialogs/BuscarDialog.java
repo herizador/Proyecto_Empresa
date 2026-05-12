@@ -2,7 +2,6 @@ package dialogs;
 
 import dao.AccesoTrabajador;
 import exception.BDException;
-import exception.TrabajadorException;
 import modelo.Trabajador;
 
 import javax.swing.*;
@@ -33,12 +32,6 @@ public class BuscarDialog extends JFrame implements ActionListener {
     JButton btnSalir;
 
     public BuscarDialog() {
-        JOptionPane.showMessageDialog(null, """
-                Buscador de trabajadores:
-                - Seleccione un campo (DNI, Nombre...)
-                - Escriba lo que desea buscar (puede ser una parte del texto)
-                - Deje el campo vacío para ver a todos los trabajadores.""", "¿Cómo buscar?", JOptionPane.INFORMATION_MESSAGE);
-
         setResizable(false);
         setTitle("Buscar Trabajadores");
         setSize(750, 725);
@@ -85,7 +78,7 @@ public class BuscarDialog extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             if (e.getActionCommand().equals("Buscar")) {
-                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
+                trabajadores = UtilsDialog.buscarPorFiltro(panelBusqueda);
 
                 String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
                 UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);

@@ -45,8 +45,6 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     Set<Trabajador> trabajadoresAEliminar = new HashSet<>();
 
     public BajaDialog() {
-        JOptionPane.showMessageDialog(null, "Seleccione un empleado y presione 'Borrar' para dar de baja.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-
         setResizable(false);
         // t�tulo del di�log
         setTitle("Baja Trabajador");
@@ -130,7 +128,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
             } else if (e.getSource() == cancelar) {
                 dispose();
             } else if (e.getActionCommand().equals("Buscar")) {
-                trabajadores = UtilsDialog.buscarPorFiltro(this, panelBusqueda);
+                trabajadores = UtilsDialog.buscarPorFiltro(panelBusqueda);
 
                 String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
                 UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);

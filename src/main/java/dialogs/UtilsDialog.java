@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class UtilsDialog {
         return pBotones;
     }
 
-    public static List<Trabajador> buscarPorFiltro(ActionListener evento, JPanel pBotones) {
+    public static List<Trabajador> buscarPorFiltro(JPanel pBotones) {
         List<Trabajador> trabajadores = new LinkedList<>();
 
         String filtro = "";
@@ -79,5 +80,19 @@ public class UtilsDialog {
     public static void refrescarDatosFiltrados(String[][] datos, JTable tabla, String[] columnas) {
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setDataVector(datos, columnas);
+    }
+
+    public static String guardarFichero(Component parent){
+        JFileChooser archivo = new JFileChooser();
+        archivo.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int seleccion = archivo.showSaveDialog(parent);
+
+        File archivoSeleccionado = archivo.getSelectedFile();
+        if (seleccion == JFileChooser.APPROVE_OPTION && archivoSeleccionado != null) {
+            return archivoSeleccionado.getAbsolutePath();
+        }
+
+        return null;
     }
 }
