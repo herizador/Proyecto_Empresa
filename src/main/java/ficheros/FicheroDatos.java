@@ -1,10 +1,20 @@
 package ficheros;
 
 import java.io.*;
+import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.*;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.bean.util.OpencsvUtils;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import exception.FicheroException;
 import modelo.Trabajador;
 
@@ -71,25 +81,21 @@ public class FicheroDatos {
     }
 
     public static void exportarEmpleadosCSV(List<Trabajador> trabajadores, String ruta) throws FicheroException {
-        BufferedWriter bw = null;
+        File fichero = new File(ruta + "/Empleados.csv");
+        FileWriter fw = null;
 
-        try{
-            File fichero = new File(ruta + "/Empleados.csv");
-            FileWriter fw = new FileWriter(fichero,false);
-            bw = new BufferedWriter(fw);
-
-            for(Trabajador t : trabajadores){
-                bw.write(t.toStringWithSeparators());
-                bw.newLine();
-            }
-        }catch (FileNotFoundException e) {
-            throw new FicheroException(FicheroException.ERROR_RUTA_INEXISTENTE);
+        try {
+            fw = new FileWriter(fichero, false);
+            StatefulBeanToCsv<Trabajador> beanToCsv = new StatefulBeanToCsvBuilder<Trabajador>(fw).withSeparator(';').withApplyQuotesToAll(false).build();
+            beanToCsv.write(trabajadores);
         } catch (IOException e) {
             throw new FicheroException(FicheroException.ERROR_AL_LEER);
-        } finally {
+        } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+            throw new FicheroException(FicheroException.DATOS_INCOMPLETOS);
+        }finally {
             try {
-                if (bw != null) {
-                    bw.close();
+                if (fw != null) {
+                    fw.close();
                 }
             } catch (IOException e) {
                 throw new FicheroException(FicheroException.ERROR_CERRAR_BUFFER);
@@ -99,27 +105,50 @@ public class FicheroDatos {
 
     public static void exportarEmpleadosJSON(List<Trabajador> trabajadores, String ruta) throws FicheroException{
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(trabajadores);
+        File fichero = new File(ruta + File.separator + "Empleados.json");
+        FileWriter fw = null;
 
-        BufferedWriter bw = null;
-        try{
-            File fichero = new File(ruta + File.separator + "Empleados.json");
-            FileWriter fw = new FileWriter(fichero,false);
-            bw = new BufferedWriter(fw);
-
-            bw.write(json);
-        }catch (FileNotFoundException e) {
-            throw new FicheroException(FicheroException.ERROR_RUTA_INEXISTENTE);
+        try {
+            fw = new FileWriter(fichero, false);
+            gson.toJson(trabajadores, fw);
         } catch (IOException e) {
             throw new FicheroException(FicheroException.ERROR_AL_LEER);
-        } finally {
+        }finally {
             try {
-                if (bw != null) {
-                    bw.close();
+                if (fw != null) {
+                    fw.close();
                 }
             } catch (IOException e) {
                 throw new FicheroException(FicheroException.ERROR_CERRAR_BUFFER);
             }
         }
+    }
+
+    public static List<Trabajador> importarEmpleadosCSV(String ruta) throws FicheroException {
+        File fichero = new File(ruta);
+        FileReader fr = null;
+
+        try{
+            fr = new FileReader(fichero);
+
+            CsvToBean<Trabajador> csvToBean = new CsvToBeanBuilder<Trabajador>(fr).withType(Trabajador.class).withSeparator(';').withMappingStrategy(null).build();
+
+            return csvToBean.parse();
+        } catch (FileNotFoundException e) {
+            throw new FicheroException(FicheroException.ERROR_AL_LEER);
+        }finally {
+            try {
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException e) {
+                throw new FicheroException(FicheroException.ERROR_CERRAR_BUFFER);
+            }
+        }
+    }
+
+    public static void importarEmpleadosJSON(String ruta) throws FicheroException{
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     }
 }

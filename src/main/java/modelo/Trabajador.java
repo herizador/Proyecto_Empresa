@@ -3,18 +3,31 @@
  */
 package modelo;
 
+import com.opencsv.bean.CsvBindAndJoinByPosition;
+import com.opencsv.bean.CsvBindByPosition;
+
 import java.util.Objects;
 
 /**
  * @author alumno
  */
 public class Trabajador {
-    private static String SEPARADOR = ";";
+    @CsvBindByPosition(position = 0)
     private String dni;
+
+    @CsvBindByPosition(position = 1)
     private String nombre;
+
+    @CsvBindByPosition(position = 2)
     private String apellidos;
+
+    @CsvBindByPosition(position = 3)
     private String direccion;
+
+    @CsvBindByPosition(position = 4)
     private String telefono;
+
+    @CsvBindByPosition(position = 5)
     private String puesto;
 
     /**
@@ -32,10 +45,6 @@ public class Trabajador {
         this.direccion = direccion;
         this.telefono = telefono;
         this.puesto = puesto;
-    }
-
-    public String toStringWithSeparators() {
-        return this.dni + SEPARADOR + this.nombre + SEPARADOR + this.apellidos + SEPARADOR + this.direccion + SEPARADOR + this.telefono + SEPARADOR + this.puesto;
     }
 
     /**

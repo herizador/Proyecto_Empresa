@@ -95,4 +95,18 @@ public class UtilsDialog {
 
         return null;
     }
+
+    public static String cargarFichero(Component parent){
+        JFileChooser archivo = new JFileChooser();
+        archivo.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        int seleccion = archivo.showOpenDialog(parent);
+
+        File archivoSeleccionado = archivo.getSelectedFile();
+        if (seleccion == JFileChooser.APPROVE_OPTION && archivoSeleccionado != null) {
+            return archivoSeleccionado.getAbsolutePath();
+        }
+
+        return null;
+    }
 }
