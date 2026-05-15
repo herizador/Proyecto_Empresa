@@ -52,7 +52,14 @@ public class AccesoTrabajador {
 
             conexion.setAutoCommit(false);
 
-            String queryInsert = "INSERT INTO trabajador(dni, nombre, apellidos, direccion, telefono, puesto) VALUES(?,?,?,?,?,?)";
+            String queryInsert = "INSERT INTO trabajador(dni, nombre, apellidos, direccion, telefono, puesto) "
+                    + "VALUES(?,?,?,?,?,?) "
+                    + "ON DUPLICATE KEY UPDATE "
+                    + "nombre = VALUES(nombre), "
+                    + "apellidos = VALUES(apellidos), "
+                    + "direccion = VALUES(direccion), "
+                    + "telefono = VALUES(telefono), "
+                    + "puesto = VALUES(puesto)";
             ps = conexion.prepareStatement(queryInsert);
 
             for (Trabajador trabajador : lista) {

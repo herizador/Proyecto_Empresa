@@ -6,10 +6,12 @@ import exception.TrabajadorException;
 import modelo.Trabajador;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileFilter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -99,6 +101,7 @@ public class UtilsDialog {
     public static String cargarFichero(Component parent){
         JFileChooser archivo = new JFileChooser();
         archivo.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        archivo.setFileFilter(new FileNameExtensionFilter(".csv .json", "csv", "json"));
 
         int seleccion = archivo.showOpenDialog(parent);
 

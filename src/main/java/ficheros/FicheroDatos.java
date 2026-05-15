@@ -132,7 +132,7 @@ public class FicheroDatos {
         try{
             fr = new FileReader(fichero);
 
-            CsvToBean<Trabajador> csvToBean = new CsvToBeanBuilder<Trabajador>(fr).withType(Trabajador.class).withSeparator(';').withMappingStrategy(null).build();
+            CsvToBean<Trabajador> csvToBean = new CsvToBeanBuilder<Trabajador>(fr).withType(Trabajador.class).withSeparator(';').build();
 
             return csvToBean.parse();
         } catch (FileNotFoundException e) {

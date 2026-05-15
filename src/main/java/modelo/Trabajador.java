@@ -31,6 +31,13 @@ public class Trabajador {
     private String puesto;
 
     /**
+     *
+     */
+    public Trabajador() {
+
+    }
+
+    /**
      * @param dni
      * @param nombre
      * @param apellidos
