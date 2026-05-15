@@ -3,6 +3,7 @@ package ficheros;
 import java.io.*;
 import java.nio.file.OpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import com.google.gson.*;
 
@@ -147,8 +148,27 @@ public class FicheroDatos {
         }
     }
 
-    public static void importarEmpleadosJSON(String ruta) throws FicheroException{
+    public static List<Trabajador> importarEmpleadosJSON(String ruta) throws FicheroException{
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        File fichero = new File(ruta);
+        FileReader fr = null;
 
+        try{
+            fr = new FileReader(fichero);
+
+            Trabajador[] trabajadores = gson.fromJson(fr, Trabajador[].class);
+
+            return Arrays.asList(trabajadores);
+        } catch (FileNotFoundException e) {
+            throw new FicheroException(FicheroException.ERROR_AL_LEER);
+        }finally {
+            try {
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException e) {
+                throw new FicheroException(FicheroException.ERROR_CERRAR_BUFFER);
+            }
+        }
     }
 }
