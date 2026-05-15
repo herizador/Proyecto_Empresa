@@ -28,7 +28,7 @@ public class ModificarDialog extends JDialog implements ActionListener, TableMod
     /**
      * Imagen de check
      */
-    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
+    ImageIcon iconoCheck = UtilsDialog.iconoCheck();
 
     /**
      * Tabla

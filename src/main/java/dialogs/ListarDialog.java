@@ -4,18 +4,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import com.mysql.cj.jdbc.CloseOption;
 import dao.AccesoTrabajador;
 import exception.BDException;
 import exception.FicheroException;
-import exception.TrabajadorException;
-import ficheros.FicheroDatos;
 import modelo.Trabajador;
 
 /**
@@ -33,7 +29,7 @@ public class ListarDialog extends JDialog implements ActionListener {
     /**
      * check
      */
-    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
+    ImageIcon iconoCheck = UtilsDialog.iconoCheck();
 
     /**
      * Panel de busqueda
@@ -45,7 +41,6 @@ public class ListarDialog extends JDialog implements ActionListener {
      */
     JPanel panelBotones;
     JButton botonExportar;
-    JButton botonImportar;
 
     List<Trabajador> trabajadores;
 
@@ -91,12 +86,8 @@ public class ListarDialog extends JDialog implements ActionListener {
         botonExportar = new JButton("Exportar");
         botonExportar.addActionListener(this);
 
-        botonImportar = new JButton("Importar");
-        botonImportar.addActionListener(this);
-
         panelBotones = new JPanel();
         panelBotones.add(botonExportar);
-        panelBotones.add(botonImportar);
         add(panelBotones);
 
         cerrar = new JButton("Salir");
@@ -117,61 +108,9 @@ public class ListarDialog extends JDialog implements ActionListener {
                 String[][] datos = AccesoTrabajador.listarTrabajadores(trabajadores);
                 UtilsDialog.refrescarDatosFiltrados(datos, tabla, columnas);
             } else if (e.getSource() == botonExportar) {
-                    exportar();
-            } else if (e.getSource() == botonImportar) {
-                    importar();
+                    UtilsDialog.exportar(this, trabajadores);
             }
         } catch (BDException | FicheroException ex) {
-            UtilsDialog.mensajeError(ex);
-        }
-    }
-
-    public void exportar() throws FicheroException {
-        String[] opciones = {"Exportar en CSV", "Exportar en JSON"};
-        int opcion = JOptionPane.showOptionDialog(null, "Elije como quiere exportar a los empleados", "Exportacion", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
-
-        if(opcion != JOptionPane.CLOSED_OPTION) {
-            String ruta = UtilsDialog.guardarFichero(this);
-
-            if(ruta != null) {
-                switch (opcion) {
-                    case 0:
-                        FicheroDatos.exportarEmpleadosCSV(trabajadores, ruta);
-                        JOptionPane.showMessageDialog(this, "Archivo CSV exportado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                        break;
-                    case 1:
-                        FicheroDatos.exportarEmpleadosJSON(trabajadores, ruta);
-                        JOptionPane.showMessageDialog(this, "Archivo JSON exportado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                        break;
-                }
-            }
-        }
-    }
-
-    public void importar() throws FicheroException {
-        try {
-            String[] opciones = {"Importar en CSV", "Importar en JSON"};
-            int opcion = JOptionPane.showOptionDialog(null, "Elije como quiere importar a los empleados", "Importacion", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
-
-            if (opcion != JOptionPane.CLOSED_OPTION) {
-                String ruta = UtilsDialog.cargarFichero(this);
-
-                if (ruta != null) {
-                    List<Trabajador> trabajadores;
-                    switch (opcion) {
-                        case 0:
-                            trabajadores = FicheroDatos.importarEmpleadosCSV(ruta);
-                            AccesoTrabajador.insertarTrabajadorLista(trabajadores);
-                            JOptionPane.showMessageDialog(this, "Archivo CSV importado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                            break;
-                        case 1:
-                            trabajadores = FicheroDatos.importarEmpleadosJSON(ruta);
-                            AccesoTrabajador.insertarTrabajadorLista(trabajadores);
-                            JOptionPane.showMessageDialog(this, "Archivo JSON importado correctamente¡", "Éxito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-                    }
-                }
-            }
-        }catch (TrabajadorException | BDException ex){
             UtilsDialog.mensajeError(ex);
         }
     }

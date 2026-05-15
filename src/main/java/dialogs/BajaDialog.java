@@ -23,7 +23,7 @@ public class BajaDialog extends JDialog implements ActionListener, TableModelLis
     /**
      * Imagen de check
      */
-    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
+    ImageIcon iconoCheck = UtilsDialog.iconoCheck();
 
     JButton aceptar;
     JButton cancelar;

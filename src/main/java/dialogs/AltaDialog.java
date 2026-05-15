@@ -27,7 +27,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
     /**
      * Imagen de check
      */
-    ImageIcon iconoCheck = UtilsDialog.imagenCheck();
+    ImageIcon iconoCheck = UtilsDialog.iconoCheck();
 
     /**
      * Elementos del JFrame
@@ -66,7 +66,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
     JPanel pBotones;
 
     public AltaDialog() {
-        String[] opciones = {"Manual", "Por fichero CSV"};
+        String[] opciones = {"Manual", "Por fichero"};
         int opcion = JOptionPane.showOptionDialog(null, "¿Cómo desea insertar el trabajador?", "Alta de Trabajador", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
 
         switch (opcion) {
@@ -81,12 +81,9 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
 
     public void insertaPorFichero() {
         try {
-            List<Trabajador> trajadores = FicheroDatos.obtenerTrabajadores(rutaResouse + "ficheroDatos/empresa.csv");
-            AccesoTrabajador.insertarTrabajadorLista(trajadores);
-
-            JOptionPane.showMessageDialog(null, "Trabajadores insertados exitosamente", "Exito", JOptionPane.PLAIN_MESSAGE, iconoCheck);
-        } catch (FicheroException | TrabajadorException | BDException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            UtilsDialog.importar(this);
+        } catch (FicheroException e) {
+            UtilsDialog.mensajeError(e);
         }
     }
 
