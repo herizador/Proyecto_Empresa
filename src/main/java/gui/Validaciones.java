@@ -2,7 +2,7 @@ package gui;
 
 public class Validaciones {
     public static boolean validarDni(String dni) {
-        if (dni == null || !dni.matches("^[0-9]{8}[A-Z]$")) {
+        if (dni.isEmpty() || !dni.matches("^[0-9]{8}[A-Z]$")) {
             return false;
         }
 

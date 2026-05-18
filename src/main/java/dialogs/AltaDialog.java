@@ -13,7 +13,6 @@ import dao.AccesoTrabajador;
 import exception.BDException;
 import exception.FicheroException;
 import exception.TrabajadorException;
-import ficheros.FicheroDatos;
 import gui.LeerValidaciones;
 import modelo.Trabajador;
 
@@ -249,6 +248,7 @@ public class AltaDialog extends JDialog implements ActionListener, ItemListener 
                 if(LeerValidaciones.validarPuesto(puesto)){
                     comboPuesto.setForeground(Color.WHITE);
                     comboPuesto.setBackground(Color.RED);
+                    error_validacion = true;
                 }else{
                     comboPuesto.setForeground(Color.BLACK);
                     comboPuesto.setBackground(Color.WHITE);

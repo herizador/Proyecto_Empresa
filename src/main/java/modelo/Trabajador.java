@@ -3,7 +3,6 @@
  */
 package modelo;
 
-import com.opencsv.bean.CsvBindAndJoinByPosition;
 import com.opencsv.bean.CsvBindByPosition;
 
 import java.util.Objects;

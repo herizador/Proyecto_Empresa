@@ -4,9 +4,10 @@ import javax.swing.*;
 
 public class LeerValidaciones {
     public static boolean validarDNI(String dni) {
-        boolean error = !Validaciones.validarDni(dni) || dni.isEmpty();
+        dni = dni.trim();
+        boolean error = Validaciones.validarDni(dni);
 
-        if(error){
+        if(error) {
             JOptionPane.showMessageDialog(null, "El DNI no tiene formato valido (8 numeros y 1 letra)", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -14,6 +15,7 @@ public class LeerValidaciones {
     }
 
     public static boolean validarNombre(String nombre) {
+        nombre = nombre.trim();
         boolean error = nombre.isEmpty();
 
         if(error){
@@ -24,6 +26,7 @@ public class LeerValidaciones {
     }
 
     public static boolean validarApellidos(String apellidos) {
+        apellidos = apellidos.trim();
         boolean error = apellidos.isEmpty();
 
         if(error){
@@ -34,6 +37,7 @@ public class LeerValidaciones {
     }
 
     public static boolean validarDireccion(String direccion) {
+        direccion = direccion.trim();
         boolean error = direccion.isEmpty();
 
         if(error){
@@ -54,12 +58,13 @@ public class LeerValidaciones {
     }
 
     public static boolean validarPuesto(String puesto) {
-        boolean error = puesto.isEmpty();
+        puesto = puesto.trim();
+        boolean error = puesto.isEmpty() || puesto.equals("Elija Puesto");
 
         if(error){
             JOptionPane.showMessageDialog(null, "Debe introducir el puesto del trabajador", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        return puesto.isEmpty();
+        return error;
     }
 }
