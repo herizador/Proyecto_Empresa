@@ -5,7 +5,7 @@ import javax.swing.*;
 public class LeerValidaciones {
     public static boolean validarDNI(String dni) {
         dni = dni.trim();
-        boolean error = Validaciones.validarDni(dni);
+        boolean error = !Validaciones.validarDni(dni);
 
         if(error) {
             JOptionPane.showMessageDialog(null, "El DNI no tiene formato valido (8 numeros y 1 letra)", "Error", JOptionPane.ERROR_MESSAGE);
